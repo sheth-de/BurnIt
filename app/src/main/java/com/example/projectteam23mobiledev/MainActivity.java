@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        usr = (TextView) findViewById(R.id.usr);
+        usr = (TextView) findViewById(R.id.usrname_edTxt);
 
         if (mAuth.getCurrentUser() != null) {
             String em = mAuth.getCurrentUser().getEmail();
