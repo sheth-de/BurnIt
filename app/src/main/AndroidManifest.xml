@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectTeam23MobileDev">
         <activity
+            android:name=".CreateChallenge"
+            android:exported="false" />
+        <activity
+            android:name=".ChallengesMainPage"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity

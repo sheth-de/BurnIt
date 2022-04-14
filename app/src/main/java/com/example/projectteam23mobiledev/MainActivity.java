@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private TextView usr;
+    private Button btnGoToChallengeTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,14 @@ public class MainActivity extends AppCompatActivity {
             String em = mAuth.getCurrentUser().getEmail();
             usr.setText("Hi "+em.substring(0, em.indexOf('@'))+ "!");
         }
+        btnGoToChallengeTemp = findViewById(R.id.btnGoToChallengeTemp);
+        btnGoToChallengeTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), ChallengesMainPage.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
