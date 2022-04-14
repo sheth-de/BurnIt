@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/run"
+        android:enabled="true"
+        android:icon="@drawable/run_24"
+        android:title="@string/run"/>
+    <item
+        android:id="@+id/challenge"
+        android:enabled="true"
+        android:icon="@drawable/challenge_24"
+        android:title="@string/challenge"/>
+    <item
+        android:id="@+id/profile"
+        android:enabled="true"
+        android:icon="@drawable/profile_24"
+        android:title="@string/profile"/>
+</menu>
