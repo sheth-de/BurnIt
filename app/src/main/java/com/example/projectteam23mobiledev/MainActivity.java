@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        usr = (TextView) findViewById(R.id.usrname_edTxt);
+//        usr = (TextView) findViewById(R.id.usrname_edTxt);
 //        usr = (TextView) findViewById(R.id.usr);
 
         if (mAuth.getCurrentUser() != null) {
