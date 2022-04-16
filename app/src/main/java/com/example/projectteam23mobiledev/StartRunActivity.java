@@ -23,7 +23,7 @@ public class StartRunActivity extends AppCompatActivity {
         btnStartRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //startActivity(new Intent(StartRunActivity.this, RunActivity.class));
+                startActivity(new Intent(StartRunActivity.this, RunActivity.class));
                 //TODO create RunActivity.java and uncomment above line
             }
         });
