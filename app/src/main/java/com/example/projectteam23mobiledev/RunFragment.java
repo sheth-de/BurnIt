@@ -28,8 +28,8 @@ public class RunFragment extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View runView = inflater.inflate(R.layout.fragment_run, container, false);
-        steps = (TextView) runView.findViewById(R.id.steps);
-        distance = (TextView) runView.findViewById(R.id.miles);
+        steps = (TextView) runView.findViewById(R.id.steps_text);
+        distance = (TextView) runView.findViewById(R.id.distance_text);
         sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
         return runView;
     }

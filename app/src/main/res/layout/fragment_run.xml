@@ -1,155 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/run_view"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/run_view"
     android:layout_width="match_parent"
-    android:background="@color/cardview_dark_background"
     android:layout_height="match_parent"
-    tools:context=".RunActivity">
+    android:background="@color/cardview_dark_background"
+    tools:context=".RunFragment">
 
-<TextView
-    android:id="@+id/miles"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="44dp"
-    android:layout_marginTop="488dp"
-    android:text="Miles"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/distance_text"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="10dp"
+        android:gravity="bottom"
+        android:text="Distance"
+        android:textColor="@color/white"
 
-<TextView
-    android:id="@+id/time"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="44dp"
-    android:layout_marginTop="20dp"
-    android:text="Time"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/miles" />
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_pause" />
 
-<TextView
-    android:id="@+id/steps"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="48dp"
-    android:layout_marginTop="68dp"
-    android:text="Steps"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/time" />
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="10dp"
+        android:text="Time"
+        android:gravity="bottom"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/distance_text" />
 
-<TextView
-    android:id="@+id/pace"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="40dp"
-    android:layout_marginTop="36dp"
-    android:text="Pace"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/steps" />
+    <TextView
+        android:id="@+id/steps_text"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="10dp"
+        android:text="Steps"
+        android:gravity="bottom"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_text" />
 
-<EditText
-    android:id="@+id/editTextNumber"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="100dp"
-    android:layout_marginTop="470dp"
-    android:ems="10"
-    android:inputType="number"
-    android:minHeight="48dp"
-    app:layout_constraintStart_toEndOf="@+id/miles"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:ignore="SpeakableTextPresentCheck" />
+    <TextView
+        android:id="@+id/pace_text"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="10dp"
+        android:text="Pace"
+        android:gravity="bottom"
+        android:textSize="20dp"
+        android:textColor="@color/white"
 
-<EditText
-    android:id="@+id/editTextNumber2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="100dp"
-    android:layout_marginTop="10dp"
-    android:ems="10"
-    android:inputType="number"
-    android:minHeight="48dp"
-    app:layout_constraintStart_toEndOf="@+id/time"
-    app:layout_constraintTop_toBottomOf="@+id/editTextNumber"
-    tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/steps_text" />
 
-<EditText
-    android:id="@+id/editTextNumber3"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="100dp"
-    android:layout_marginTop="10dp"
-    android:ems="10"
-    android:inputType="number"
-    android:minHeight="48dp"
-    app:layout_constraintStart_toEndOf="@+id/steps"
-    app:layout_constraintTop_toBottomOf="@+id/editTextNumber2"
-    tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+    <EditText
+        android:id="@+id/distance_value"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="80dp"
+        android:inputType="number"
+        android:gravity="bottom"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/distance_text"
+        app:layout_constraintTop_toBottomOf="@+id/btn_stop"
+        tools:ignore="SpeakableTextPresentCheck" />
 
-<EditText
-    android:id="@+id/editTextNumberDecimal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="100dp"
-    android:layout_marginTop="10dp"
-    android:ems="10"
-    android:inputType="numberDecimal"
-    android:minHeight="48dp"
-    app:layout_constraintStart_toEndOf="@+id/pace"
-    app:layout_constraintTop_toBottomOf="@+id/editTextNumber3"
-    tools:ignore="SpeakableTextPresentCheck" />
+    <EditText
+        android:id="@+id/time_value"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="80dp"
+        android:inputType="number"
+        android:gravity="bottom"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/time_text"
+        app:layout_constraintTop_toBottomOf="@+id/distance_value"
+        tools:ignore="SpeakableTextPresentCheck" />
 
-<Button
-    android:id="@+id/button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="45dp"
-    android:layout_marginTop="257dp"
-    android:layout_marginEnd="39dp"
-    android:layout_marginBottom="21dp"
-    android:text="PAUSE"
-    app:layout_constraintBottom_toTopOf="@+id/editTextNumber"
-    app:layout_constraintEnd_toStartOf="@+id/button2"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="1.0" />
+    <EditText
+        android:id="@+id/steps_value"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="80dp"
+        android:inputType="number"
+        android:gravity="bottom"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/steps_text"
+        app:layout_constraintTop_toBottomOf="@+id/time_value"
+        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
-<!--    <com.google.android.gms.maps.MapView-->
-<!--        android:id="@+id/mapView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="176dp"-->
-<!--        android:layout_marginTop="125dp"-->
-<!--        android:layout_marginEnd="185dp"-->
-<!--        android:layout_marginBottom="151dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/editTextNumber"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:ignore="SpeakableTextPresentCheck" />-->
+    <EditText
+        android:id="@+id/pace_value"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="80dp"
+        android:inputType="numberDecimal"
+        android:gravity="bottom"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/pace_text"
+        app:layout_constraintTop_toBottomOf="@+id/steps_value"
+        tools:ignore="SpeakableTextPresentCheck" />
 
-<Button
-    android:id="@+id/button2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="39dp"
-    android:layout_marginTop="257dp"
-    android:layout_marginBottom="21dp"
-    android:text="STOP"
-    app:layout_constraintBottom_toTopOf="@+id/editTextNumber"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/button"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="1.0" />
+    <Button
+        android:id="@+id/btn_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="5dp"
+        android:text="PAUSE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map" />
 
-<fragment
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="400dp"
-    app:layout_constraintBottom_toTopOf="@+id/button"
-    app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="80dp"
+        android:text="STOP"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="550dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
