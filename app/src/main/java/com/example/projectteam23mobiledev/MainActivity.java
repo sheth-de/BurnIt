@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 //    private TextView usr;
     private BottomNavigationView bottomNavigationView;
 
-    private RunFragment runFragment = new RunFragment();
+    private StartRunActivity StartRunFragment = new StartRunActivity();
     private ProfileFragment profileFragment = new ProfileFragment();
     private ChallengeFragment challengeFragment = new ChallengeFragment();
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.run:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, runFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, StartRunFragment).commit();
                         return true;
                     case R.id.profile:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, profileFragment).commit();

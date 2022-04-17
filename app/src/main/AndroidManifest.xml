@@ -11,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectTeam23MobileDev">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCQUk27Q0FCtZDQ2MZAeiS4paJFqbvM7rc" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
