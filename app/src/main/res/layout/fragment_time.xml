@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TimeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/btnCreateTimeChallenge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="Create"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeAddUsers" />
+
+    <EditText
+        android:id="@+id/timeEnterTime"
+        android:layout_width="282dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="136dp"
+        android:ems="10"
+        android:hint="Enter time in minutes"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView4"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <EditText
+        android:id="@+id/timeMinPoints"
+        android:layout_width="283dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="72dp"
+        android:ems="10"
+        android:hint="Enter Minimum Points to join"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/timeEnterTime"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeEnterTime"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <EditText
+        android:id="@+id/timeAddUsers"
+        android:layout_width="280dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="72dp"
+        android:ems="10"
+        android:hint="Enter usernames to invite"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/timeMinPoints"
+        app:layout_constraintTop_toBottomOf="@+id/timeMinPoints"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

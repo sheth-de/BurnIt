@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -17,9 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private TextView usr;
 //    private TextView usr;
     private BottomNavigationView bottomNavigationView;
-
     private StartRunActivity StartRunFragment = new StartRunActivity();
     private ProfileFragment profileFragment = new ProfileFragment();
     private ChallengeFragment challengeFragment = new ChallengeFragment();
@@ -39,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
             String em = mAuth.getCurrentUser().getEmail();
 //            usr.setText("Hi "+em.substring(0, em.indexOf('@'))+ "!");
         }
-
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, challengeFragment).commit();
 

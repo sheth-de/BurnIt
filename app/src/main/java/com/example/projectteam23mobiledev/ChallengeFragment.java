@@ -1,5 +1,6 @@
 package com.example.projectteam23mobiledev;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.projectteam23mobiledev.Adapters.ChallengeCardAdapter;
 import com.example.projectteam23mobiledev.Models.ChallengeCardModel;
@@ -22,13 +24,21 @@ public class ChallengeFragment extends Fragment {
     private ArrayList<ChallengeCardModel> ongoingModelArrayList;
     private ChallengeCardAdapter challengeCardAdapter;
     private ChallengeCardAdapter onGoingChallengeCardAdapter;
+    private Button fragmentBtnCreateChallenge;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_challenge, container, false);
-
+        fragmentBtnCreateChallenge = view.findViewById(R.id.fragmentBtnCreateChallenge);
+        fragmentBtnCreateChallenge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateChallenge.class);
+                startActivity(intent);
+            }
+        });
 
         openChViewPager = view.findViewById(R.id.vp_open_ch);
         loadOpenCards();
