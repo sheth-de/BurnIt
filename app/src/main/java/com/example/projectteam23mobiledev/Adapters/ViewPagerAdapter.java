@@ -1,9 +1,12 @@
-package com.example.projectteam23mobiledev;
+package com.example.projectteam23mobiledev.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.projectteam23mobiledev.DistanceFragment;
+import com.example.projectteam23mobiledev.TimeFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity)
