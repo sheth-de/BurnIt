@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 //            usr.setText("Hi "+em.substring(0, em.indexOf('@'))+ "!");
         }
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, challengeFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, StartRunFragment).commit();
 
 //        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.profile);
 //        badgeDrawable.setVisible(true);
