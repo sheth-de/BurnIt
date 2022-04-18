@@ -20,10 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private TextView usr;
-    private Button btnGoToChallengeTemp;
 //    private TextView usr;
     private BottomNavigationView bottomNavigationView;
-    private RunFragment runFragment = new RunFragment();
+    private StartRunActivity StartRunFragment = new StartRunActivity();
     private ProfileFragment profileFragment = new ProfileFragment();
     private ChallengeFragment challengeFragment = new ChallengeFragment();
 
@@ -35,21 +34,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        usr = (TextView) findViewById(R.id.usrname_edTxt);
+//        usr = (TextView) findViewById(R.id.usrname_edTxt);
 //        usr = (TextView) findViewById(R.id.usr);
 
         if (mAuth.getCurrentUser() != null) {
             String em = mAuth.getCurrentUser().getEmail();
 //            usr.setText("Hi "+em.substring(0, em.indexOf('@'))+ "!");
         }
-        btnGoToChallengeTemp = findViewById(R.id.btnGoToChallengeTemp);
-        btnGoToChallengeTemp.setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View view) {
-                                                        Intent intent = new Intent(view.getContext(), ChallengesMainPage.class);
-                                                        startActivity(intent);
-                                                    }
-                                                });
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, challengeFragment).commit();
 
@@ -62,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.run:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, runFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, StartRunFragment).commit();
                         return true;
                     case R.id.profile:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, profileFragment).commit();

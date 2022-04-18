@@ -5,7 +5,6 @@
       <map>
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2085" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2085" />
-        <entry key="app/src/main/res/layout/activity_challenges_main_page.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_create_challenge.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_distance_fragment.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.19610507246376813" />
@@ -30,7 +29,6 @@
         <entry key="app/src/main/res/layout/ongoing_challenge_card_item.xml" value="0.16033755274261605" />
         <entry key="app/src/main/res/layout/open_challenge_card_item.xml" value="0.375" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.4661458333333333" />
->>>>>>> 6133f4699dcf51521c549592958fab3a2b23e91e
       </map>
     </option>
   </component>
