@@ -4,12 +4,32 @@ public class ChallengeCardModel {
 
     String title, details, created_by;
     Long date;
+    String challengeId;
+    Challenge challenge;
 
-    public ChallengeCardModel(String title, String details, Long date, String created_by) {
+    public ChallengeCardModel(String title, String details, Long date, String created_by, String challengeId, Challenge challenge) {
         this.title = title;
         this.details = details;
         this.date = date;
         this.created_by = created_by;
+        this.challengeId = challengeId;
+        this.challenge = challenge;
+    }
+
+    public Challenge getChallenge() {
+        return challenge;
+    }
+
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
+    }
+
+    public String getChallengeId() {
+        return challengeId;
+    }
+
+    public void setChallengeId(String challengeId) {
+        this.challengeId = challengeId;
     }
 
     public String getTitle() {
