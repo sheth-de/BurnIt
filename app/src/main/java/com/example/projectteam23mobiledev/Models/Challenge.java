@@ -11,6 +11,8 @@ public class Challenge {
     Integer totalCredit;
     String status;
 
+    public Challenge(){};
+
     public Challenge(String type, Double distance, Double time, String receiver, String sender, Integer minPoints, Long timeStamp, Integer totalCredit, String status) {
         this.type = type;
         this.distance = distance;
