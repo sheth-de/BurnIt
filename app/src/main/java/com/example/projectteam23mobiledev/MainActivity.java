@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        usr = (TextView) findViewById(R.id.usrname_edTxt);
 //        usr = (TextView) findViewById(R.id.usr);
 
         if (mAuth.getCurrentUser() != null) {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                                                     }
                                                 });
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, runFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, challengeFragment).commit();
 
 //        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.profile);
 //        badgeDrawable.setVisible(true);
