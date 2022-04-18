@@ -2,9 +2,10 @@ package com.example.projectteam23mobiledev.Models;
 
 public class ChallengeCardModel {
 
-    String title, details, date, created_by;
+    String title, details, created_by;
+    Long date;
 
-    public ChallengeCardModel(String title, String details, String date, String created_by) {
+    public ChallengeCardModel(String title, String details, Long date, String created_by) {
         this.title = title;
         this.details = details;
         this.date = date;
@@ -27,11 +28,11 @@ public class ChallengeCardModel {
         this.details = details;
     }
 
-    public String getDate() {
+    public Long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 

@@ -16,6 +16,7 @@ import com.example.projectteam23mobiledev.Models.ChallengeCardModel;
 import com.example.projectteam23mobiledev.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ChallengeCardAdapter extends PagerAdapter {
     //private Context context;
@@ -64,14 +65,14 @@ public class ChallengeCardAdapter extends PagerAdapter {
         final String title = challengeCardModel.getTitle();
         final String details = challengeCardModel.getDetails();
         final String createdBy = challengeCardModel.getCreated_by();
-        final String time = challengeCardModel.getDate();
+        final long time = challengeCardModel.getDate();
 
 
         //set data
         ch_title.setText(title);
         ch_details.setText(details);
         ch_createdBy.setText(createdBy);
-        ch_time.setText(time);
+        ch_time.setText(String.valueOf(new Date(time)));
 
         // handle accept click
         btn_accpt.setOnClickListener(new View.OnClickListener() {
