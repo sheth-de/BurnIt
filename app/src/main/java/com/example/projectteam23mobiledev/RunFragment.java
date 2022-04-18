@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 public class RunFragment extends Fragment implements SensorEventListener, OnMapReadyCallback{
 
     TextView steps;
+    int stepCount = 0;
     TextView distance;
     SensorManager sensorManager;
     boolean isRunning = false;
@@ -69,6 +70,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if (countSensor != null) {
             sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_FASTEST);
+            stepCount++;
         } else {
            Toast.makeText(getContext(), "Sensor does not exist", Toast.LENGTH_SHORT).show();
         }
@@ -92,7 +94,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     public void onSensorChanged(SensorEvent sensorEvent) {
 
         if (isRunning) {
-            steps.setText(String.valueOf(sensorEvent.values[0]));
+            steps.setText(String.valueOf(stepCount));
             float distanceTravelled = (float)(sensorEvent.values[0] * 78) / (float)100000;
             distance.setText(String.valueOf(distanceTravelled));
         }
