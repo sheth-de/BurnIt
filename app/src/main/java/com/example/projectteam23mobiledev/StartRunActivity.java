@@ -24,12 +24,15 @@ public class StartRunActivity extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-
         Fragment fragment = new RunFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.start_run_view, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

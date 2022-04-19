@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -46,9 +47,12 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.net.URL;
 import java.util.List;
 
 public class RunFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -76,6 +80,8 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fetchLocation();
+
+
         return runView;
     }
 //
@@ -114,7 +120,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-
         if (isRunning) {
             steps.setText(String.valueOf(stepCount));
             float distanceTravelled = (float)(sensorEvent.values[0] * 78) / (float)100000;
@@ -128,7 +133,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     }
 
     private void fetchLocation() {
-
         if (ActivityCompat.checkSelfPermission(
                 getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -149,6 +153,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             }
         });
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
 //        mMap = googleMap;
@@ -213,6 +218,17 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        PolylineOptions polyLine = new PolylineOptions();
+
+        polyLine.visible(true);
+        Log.d(TAG, "startCap:" + polyLine.getStartCap());
+        polyLine.add(latLng);
+        polyLine.width(10f);
+        polyLine.color(Color.BLUE);
+        polyLine.geodesic(true);
+        mMap.addPolyline(polyLine);
 
 //        //stop location updates
 //        if (mGoogleApiClient != null) {
