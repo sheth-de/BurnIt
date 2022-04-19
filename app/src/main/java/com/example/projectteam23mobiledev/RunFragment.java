@@ -1,5 +1,7 @@
 package com.example.projectteam23mobiledev;
 
+import static android.content.ContentValues.TAG;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -8,8 +10,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+//import android.location.LocationListener;
+//import android.location.LocationRequest;
+import android.os.Build;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +25,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+//import androidx.core.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationListener;
+
 
 
 import com.google.android.gms.maps.SupportMapFragment;
@@ -34,8 +49,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-public class RunFragment extends Fragment implements SensorEventListener, OnMapReadyCallback{
+import java.util.List;
 
+public class RunFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+
+    private GoogleMap mMap;
     TextView steps;
     int stepCount = 0;
     TextView distance;
@@ -44,6 +62,10 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 101;
+    Marker mCurrLocationMarker;
+    Location mLastLocation;
+    GoogleApiClient mGoogleApiClient;
+    LocationRequest mLocationRequest;
 
     @Nullable
     @Override
@@ -129,12 +151,28 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        //fetchLocation();
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
+//        mMap = googleMap;
+      LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+//        //fetchLocation();
+        //MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
-        googleMap.addMarker(markerOptions);
+        //googleMap.addMarker(markerOptions);
+
+        mMap = googleMap;
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                buildGoogleApiClient();
+                mMap.setMyLocationEnabled(true);
+            }
+        }
+        else {
+            buildGoogleApiClient();
+            mMap.setMyLocationEnabled(true);
+        }
     }
 
     @Override
@@ -147,5 +185,89 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                 }
                 break;
         }
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged: "+location.getLatitude()+" "+ location.getLongitude());
+        mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+//        //stop location updates
+//        if (mGoogleApiClient != null) {
+//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+//        }
+
+    }
+
+//    @Override
+//    public void onLocationChanged(@NonNull List<Location> locations) {
+//        LocationListener.super.onLocationChanged(locations);
+//    }
+
+//    @Override
+//    public void onFlushComplete(int requestCode) {
+//        LocationListener.super.onFlushComplete(requestCode);
+//    }
+
+//    @Override
+//    public void onStatusChanged(String provider, int status, Bundle extras) {
+//        LocationListener.super.onStatusChanged(provider, status, extras);
+//    }
+
+//    @Override
+//    public void onProviderEnabled(@NonNull String provider) {
+//        LocationListener.super.onProviderEnabled(provider);
+//    }
+//
+//    @Override
+//    public void onProviderDisabled(@NonNull String provider) {
+//        LocationListener.super.onProviderDisabled(provider);
+//    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "onConnected: ");
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
