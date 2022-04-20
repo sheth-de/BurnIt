@@ -4,12 +4,14 @@ import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.icu.number.Precision;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,9 +62,11 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     private int sec = 0;
     TextView steps;
     int stepCount = 0;
+    long tStart;
     TextView distance;
     TextView time;
-    SensorManager sensorManager;
+    TextView pace;
+    //SensorManager sensorManager;
     boolean isRunning = false;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -71,6 +75,10 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
+    SensorManager sensorManager;
+    Sensor countSensor;
+
+    //SensorManager sManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
     @Nullable
     @Override
@@ -79,8 +87,12 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         steps = (TextView) runView.findViewById(R.id.steps_value);
         distance = (TextView) runView.findViewById(R.id.distance_value);
         time = (TextView) runView.findViewById(R.id.time_value);
+        pace = (TextView) runView.findViewById(R.id.pace_value);
         sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
+        countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        //sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        tStart = System.currentTimeMillis();
         startTimer();
         fetchLocation();
 
@@ -89,15 +101,18 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
     @Override
     public void onResume() {
+//        super.onResume();
+           isRunning = true;
+//
+//        if (countSensor != null) {
+//            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_FASTEST);
+//            stepCount++;
+//        } else {
+//           Toast.makeText(getContext(), "Sensor does not exist", Toast.LENGTH_SHORT).show();
+//        }
         super.onResume();
-        isRunning = true;
-        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (countSensor != null) {
-            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_FASTEST);
-            stepCount++;
-        } else {
-           Toast.makeText(getContext(), "Sensor does not exist", Toast.LENGTH_SHORT).show();
-        }
+
+        sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
@@ -109,18 +124,36 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
     @Override
     public void onStop() {
-        super.onStop();
         isRunning = false;
-        sensorManager.unregisterListener(this);
+        super.onStop();
+        sensorManager.unregisterListener(this, countSensor);
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if (isRunning) {
-            steps.setText(String.valueOf(stepCount));
-            float distanceTravelled = (float)(sensorEvent.values[0] * 78) / (float)100000;
-            distance.setText(String.valueOf(distanceTravelled));
+
+        Sensor sensor = sensorEvent.sensor;
+        float[] values = sensorEvent.values;
+        int value = -1;
+
+        if (values.length > 0) {
+            value = (int) values[0];
         }
+
+        if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+            stepCount++;
+        }
+        float distanceTravelled = (float)(stepCount * 2.2) / (float)5280;
+        String roundOffDistance = String.format("%.2f", distanceTravelled);
+        distance.setText(String.valueOf(roundOffDistance));
+        steps.setText(String.valueOf(stepCount));
+        long tEnd = System.currentTimeMillis();
+        long tDelta = tEnd - tStart;
+        long elapsedSeconds = (long) (tDelta / 1000.0);
+        double elapsedHours = (elapsedSeconds/(60.0 * 60.0));
+        double speed = (elapsedHours != 0) ? (distanceTravelled/elapsedHours) : 0;
+        String roundSpeed = String.format("%.2f", speed);
+        pace.setText(String.valueOf(roundSpeed));
     }
 
     @Override
