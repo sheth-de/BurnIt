@@ -14,10 +14,12 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,12 +51,17 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Locale;
+
 public class RunFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private GoogleMap mMap;
+    private Chronometer chronometer;
+    private int sec = 0;
     TextView steps;
     int stepCount = 0;
     TextView distance;
+    TextView time;
     SensorManager sensorManager;
     boolean isRunning = false;
     Location currentLocation;
@@ -71,10 +78,11 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         View runView = inflater.inflate(R.layout.fragment_run, container, false);
         steps = (TextView) runView.findViewById(R.id.steps_value);
         distance = (TextView) runView.findViewById(R.id.distance_value);
+        time = (TextView) runView.findViewById(R.id.time_value);
         sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        startTimer();
         fetchLocation();
-
 
         return runView;
     }
@@ -240,5 +248,35 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    private void startTimer()
+    {
+        //final TextView timer = (TextView) findViewById(R.id.steps_value);
+
+        final Handler hd = new Handler();
+
+        hd.post(new Runnable() {
+            @Override
+
+            public void run()
+            {
+                int hours_var = sec / 3600;
+                int minutes_var = (sec % 3600) / 60;
+                int secs_var = sec % 60;
+
+                String time_value = String.format(Locale.getDefault(),
+                        "%d:%02d:%02d", hours_var, minutes_var, secs_var);
+
+                time.setText(time_value);
+
+                if (isRunning)
+                {
+                    sec++;
+                }
+
+                hd.postDelayed(this, 1000);
+            }
+        });
     }
 }
