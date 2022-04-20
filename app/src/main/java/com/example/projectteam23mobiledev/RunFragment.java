@@ -11,8 +11,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-//import android.location.LocationListener;
-//import android.location.LocationRequest;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -26,7 +24,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-//import androidx.core.content.ContextCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -51,9 +48,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import java.net.URL;
-import java.util.List;
 
 public class RunFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
@@ -84,12 +78,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
         return runView;
     }
-//
-//    private FusedLocationProviderClient fusedLocationClient;
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-//    }
 
     @Override
     public void onResume() {
@@ -156,13 +144,10 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
       LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//        //fetchLocation();
-        //MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here!");
+
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
-        //googleMap.addMarker(markerOptions);
 
         mMap = googleMap;
 
@@ -217,7 +202,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(50));
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
         PolylineOptions polyLine = new PolylineOptions();
@@ -230,37 +215,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         polyLine.geodesic(true);
         mMap.addPolyline(polyLine);
 
-//        //stop location updates
-//        if (mGoogleApiClient != null) {
-//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-//        }
-
     }
-
-//    @Override
-//    public void onLocationChanged(@NonNull List<Location> locations) {
-//        LocationListener.super.onLocationChanged(locations);
-//    }
-
-//    @Override
-//    public void onFlushComplete(int requestCode) {
-//        LocationListener.super.onFlushComplete(requestCode);
-//    }
-
-//    @Override
-//    public void onStatusChanged(String provider, int status, Bundle extras) {
-//        LocationListener.super.onStatusChanged(provider, status, extras);
-//    }
-
-//    @Override
-//    public void onProviderEnabled(@NonNull String provider) {
-//        LocationListener.super.onProviderEnabled(provider);
-//    }
-//
-//    @Override
-//    public void onProviderDisabled(@NonNull String provider) {
-//        LocationListener.super.onProviderDisabled(provider);
-//    }
 
     @Override
     public void onConnected(Bundle bundle) {
