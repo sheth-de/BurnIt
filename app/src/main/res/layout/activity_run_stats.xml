@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/run_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cardview_dark_background"
+    tools:context=".RunFragment">
+
+    <TextView
+        android:id="@+id/distance_text_stats"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:gravity="bottom"
+        android:text="Distance"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/time_text_stats"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/time_value_stats"
+        android:gravity="bottom"
+        android:text="Time"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/steps_text_stats"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/distance_text_stats"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:gravity="bottom"
+        android:text="Steps"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/pace_text_stats"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/time_text_stats"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/pace_value_stats"
+        android:gravity="bottom"
+        android:text="Pace"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/distance_value_stats"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/distance_text_stats"
+        android:gravity="bottom"
+        android:inputType="number"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/time_value_stats"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="bottom"
+        android:inputType="number"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/steps_value_stats"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/distance_value_stats"
+        android:layout_toRightOf="@id/steps_text_stats"
+        android:gravity="bottom"
+        android:inputType="number"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/pace_value_stats"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/time_value_stats"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="bottom"
+        android:inputType="numberDecimal"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <EditText
+        android:id="@+id/editTextTextPersonName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="224dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:text="Congrats" />
+
+
+</RelativeLayout>

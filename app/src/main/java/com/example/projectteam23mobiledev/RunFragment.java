@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -21,7 +22,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.projectteam23mobiledev.Models.RunModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -52,7 +56,10 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Date;
 import java.util.Locale;
 
 public class RunFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -62,11 +69,14 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     private int sec = 0;
     TextView steps;
     int stepCount = 0;
+    double speed = 0;
+    double elapsedHours = 0;
+    long elapsedSeconds = 0;
+    double distanceValue = 0;
     long tStart;
     TextView distance;
     TextView time;
     TextView pace;
-    //SensorManager sensorManager;
     boolean isRunning = false;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -77,13 +87,15 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     LocationRequest mLocationRequest;
     SensorManager sensorManager;
     Sensor countSensor;
-
-    //SensorManager sManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+    Button stop;
+    FirebaseAuth mAuth;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View runView = inflater.inflate(R.layout.fragment_run, container, false);
+        mAuth = FirebaseAuth.getInstance();
+        String currEmail  = mAuth.getCurrentUser().getEmail();
         steps = (TextView) runView.findViewById(R.id.steps_value);
         distance = (TextView) runView.findViewById(R.id.distance_value);
         time = (TextView) runView.findViewById(R.id.time_value);
@@ -96,20 +108,41 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         startTimer();
         fetchLocation();
 
+        stop = (Button) runView.findViewById(R.id.btn_stop);
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Date d = new Date();
+                d.getTime();
+
+                RunModel run = new RunModel(currEmail, distanceValue, stepCount, speed, elapsedSeconds);
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("runstats")
+                        .add(run)
+                        .addOnSuccessListener(documentReference -> {
+                            //Toast.makeText(getApplicationContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(exception -> {
+                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                openNewActivity();
+                onStop();
+
+            }
+        });
         return runView;
+    }
+
+    public void openNewActivity(){
+        Intent intent = new Intent(getActivity(), RunStatistics.class);
+        startActivity(intent);
     }
 
     @Override
     public void onResume() {
-//        super.onResume();
-           isRunning = true;
-//
-//        if (countSensor != null) {
-//            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_FASTEST);
-//            stepCount++;
-//        } else {
-//           Toast.makeText(getContext(), "Sensor does not exist", Toast.LENGTH_SHORT).show();
-//        }
+        isRunning = true;
         super.onResume();
 
         sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_FASTEST);
@@ -143,15 +176,15 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             stepCount++;
         }
-        float distanceTravelled = (float)(stepCount * 2.2) / (float)5280;
-        String roundOffDistance = String.format("%.2f", distanceTravelled);
+        distanceValue = (float)(stepCount * 2.2) / (float)5280;
+        String roundOffDistance = String.format("%.2f", distanceValue);
         distance.setText(String.valueOf(roundOffDistance));
         steps.setText(String.valueOf(stepCount));
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
-        long elapsedSeconds = (long) (tDelta / 1000.0);
-        double elapsedHours = (elapsedSeconds/(60.0 * 60.0));
-        double speed = (elapsedHours != 0) ? (distanceTravelled/elapsedHours) : 0;
+        elapsedSeconds = (tDelta / 1000);
+        elapsedHours = (elapsedSeconds/(60.0 * 60.0));
+        speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
         String roundSpeed = String.format("%.2f", speed);
         pace.setText(String.valueOf(roundSpeed));
     }
@@ -285,8 +318,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
     private void startTimer()
     {
-        //final TextView timer = (TextView) findViewById(R.id.steps_value);
-
         final Handler hd = new Handler();
 
         hd.post(new Runnable() {
