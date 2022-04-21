@@ -8,12 +8,44 @@
     android:background="@color/cardview_dark_background"
     tools:context=".RunFragment">
 
+    <EditText
+        android:id="@+id/editTextTextPersonName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="120dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="50dp"
+        android:text="Congrats" />
+
+    <EditText
+        android:id="@+id/editTextTextPersonName1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="224dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:text="You completed the run" />
+
     <TextView
         android:id="@+id/distance_text_stats"
         android:layout_width="80dp"
         android:layout_height="48dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginTop="300dp"
+        android:layout_marginStart="25dp"
         android:gravity="bottom"
         android:text="Distance"
         android:textColor="@color/white"
@@ -23,7 +55,7 @@
         android:id="@+id/time_text_stats"
         android:layout_width="80dp"
         android:layout_height="48dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="300dp"
         android:layout_toLeftOf="@id/time_value_stats"
         android:gravity="bottom"
         android:text="Time"
@@ -58,7 +90,7 @@
         android:id="@+id/distance_value_stats"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="300dp"
         android:layout_toRightOf="@id/distance_text_stats"
         android:gravity="bottom"
         android:inputType="number"
@@ -71,7 +103,7 @@
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="300dp"
         android:layout_marginEnd="20dp"
         android:gravity="bottom"
         android:inputType="number"
@@ -106,18 +138,7 @@
         android:textSize="20dp"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <EditText
-        android:id="@+id/editTextTextPersonName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="224dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:text="Congrats" />
+
 
 
 </RelativeLayout>
