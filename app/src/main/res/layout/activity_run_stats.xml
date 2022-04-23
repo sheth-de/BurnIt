@@ -44,8 +44,8 @@
         android:id="@+id/distance_text_stats"
         android:layout_width="80dp"
         android:layout_height="48dp"
-        android:layout_marginTop="300dp"
         android:layout_marginStart="25dp"
+        android:layout_marginTop="300dp"
         android:gravity="bottom"
         android:text="Distance"
         android:textColor="@color/white"
@@ -137,6 +137,34 @@
         android:textColor="@color/white"
         android:textSize="20dp"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/calories_text_stats"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/steps_text_stats"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:gravity = "bottom"
+        android:text="Calories"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+
+    <TextView
+        android:id="@+id/calories_value_stats"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/pace_text_stats"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/calories_text_stats"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:ignore="SpeakableTextPresentCheck" />
+
 
 
 

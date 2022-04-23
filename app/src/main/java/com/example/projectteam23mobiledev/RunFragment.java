@@ -129,18 +129,19 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                 Date d = new Date();
                 d.getTime();
 
-                RunModel run = new RunModel(currEmail, distanceValue, stepCount, speed, elapsedSeconds);
+                RunModel run = new RunModel(currEmail, distanceValue, stepCount, speed, elapsedSeconds, caloriesValue);
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("runstats")
                         .add(run)
                         .addOnSuccessListener(documentReference -> {
+                            openNewActivity(run);
                             //Toast.makeText(getApplicationContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
                         })
                         .addOnFailureListener(exception -> {
                             Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
                         });
-                openNewActivity();
+
                 onStop();
 
             }
@@ -148,8 +149,9 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         return runView;
     }
 
-    public void openNewActivity(){
+    public void openNewActivity(RunModel runModel){
         Intent intent = new Intent(getActivity(), RunStatistics.class);
+        intent.putExtra("run", runModel);
         startActivity(intent);
     }
 
