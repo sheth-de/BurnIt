@@ -2,18 +2,12 @@ package com.example.projectteam23mobiledev;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -49,6 +43,11 @@ public class ChallengeFragment extends Fragment {
     private ChallengeCardAdapter onGoingChallengeCardAdapter;
     private Button fragmentBtnCreateChallenge;
     FirebaseAuth mAuth;
+    private BottomNavViewModel bottomNavViewModel;
+
+    public ChallengeFragment(BottomNavViewModel bottomNavViewModel) {
+        this.bottomNavViewModel = bottomNavViewModel;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -183,13 +182,13 @@ public class ChallengeFragment extends Fragment {
                             }
                         });
 
-                        onGoingChallengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, ongoingModelArrayList, false);
+                        onGoingChallengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, ongoingModelArrayList, false, bottomNavViewModel);
 
                         ongoingChViewPager.setAdapter(onGoingChallengeCardAdapter);
 
                         ongoingChViewPager.setPadding(50, 0, 50, 0);
 
-                        challengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, modelArrayList, true);
+                        challengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, modelArrayList, true, bottomNavViewModel);
 
                         openChViewPager.setAdapter(challengeCardAdapter);
 
@@ -225,7 +224,7 @@ public class ChallengeFragment extends Fragment {
     private void loadOngoingCards() {
         ongoingModelArrayList = new ArrayList<>();
 
-        onGoingChallengeCardAdapter = new ChallengeCardAdapter(this, ongoingModelArrayList, false);
+        onGoingChallengeCardAdapter = new ChallengeCardAdapter(this, ongoingModelArrayList, false, bottomNavViewModel);
 
         ongoingChViewPager.setAdapter(onGoingChallengeCardAdapter);
 
@@ -235,7 +234,7 @@ public class ChallengeFragment extends Fragment {
     private void loadOpenCards() {
         modelArrayList = new ArrayList<>();
 
-        challengeCardAdapter = new ChallengeCardAdapter(this, modelArrayList, true);
+        challengeCardAdapter = new ChallengeCardAdapter(this, modelArrayList, true, bottomNavViewModel);
 
         openChViewPager.setAdapter(challengeCardAdapter);
 

@@ -94,6 +94,16 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View runView = inflater.inflate(R.layout.fragment_run, container, false);
+
+        Bundle bundle = this.getArguments();
+        String challengeId = "";
+        if (bundle != null) {
+            challengeId  = bundle.getString("challengeId", null);
+//            Toast.makeText(getContext(), challengeId, Toast.LENGTH_SHORT).show();
+        }
+
+
+
         mAuth = FirebaseAuth.getInstance();
         String currEmail  = mAuth.getCurrentUser().getEmail();
         steps = (TextView) runView.findViewById(R.id.steps_value);

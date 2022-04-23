@@ -1,7 +1,10 @@
 package com.example.projectteam23mobiledev;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private StartRunActivity StartRunFragment = new StartRunActivity();
     private ProfileFragment profileFragment = new ProfileFragment();
-    private ChallengeFragment challengeFragment = new ChallengeFragment();
+    private ChallengeFragment challengeFragment;
+
+    private BottomNavViewModel bottomNavViewModel;
 
 
 
@@ -32,6 +37,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Get the ViewModel.
+        bottomNavViewModel = new ViewModelProvider(this).get(BottomNavViewModel.class);
+
+        bottomNavViewModel.getSelected().observe(this, id -> {
+            switch (id) {
+                case 1:
+                    bottomNavigationView.setSelectedItemId(R.id.run);
+                    break;
+                case 2:
+                    bottomNavigationView.setSelectedItemId(R.id.challenge);
+                    break;
+                case 3:
+                    bottomNavigationView.setSelectedItemId(R.id.profile);
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        challengeFragment = new ChallengeFragment(bottomNavViewModel);
 
         mAuth = FirebaseAuth.getInstance();
 //        usr = (TextView) findViewById(R.id.usrname_edTxt);

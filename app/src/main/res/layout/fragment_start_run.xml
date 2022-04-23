@@ -14,8 +14,8 @@
         android:background="@drawable/btn_round"
         android:text="Start Run!"
         android:textColor="#000"
-        android:textSize="30dp"
-        android:textStyle="bold" />
+        android:textSize="40sp"
+        android:textStyle="bold|italic" />
 
 
 </RelativeLayout>
