@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.projectteam23mobiledev.Models.Challenge;
+import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -127,7 +128,9 @@ public class TimeFragment extends Fragment {
                                             finalMinPoints,
                                             d.getTime(),
                                             finalMinPoints1,
-                                            "open"
+                                            "open",
+                                            StatusEnum.ACCEPTED,
+                                            StatusEnum.OPEN
                                     );
                                     db.collection("challenges")
                                             .add(challenge)
