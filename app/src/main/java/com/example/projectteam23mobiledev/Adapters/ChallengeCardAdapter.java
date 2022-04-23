@@ -1,27 +1,23 @@
 package com.example.projectteam23mobiledev.Adapters;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.example.projectteam23mobiledev.BottomNavViewModel;
 import com.example.projectteam23mobiledev.ChallengeFragment;
 import com.example.projectteam23mobiledev.Models.ChallengeCardModel;
 import com.example.projectteam23mobiledev.R;
+import com.example.projectteam23mobiledev.RunFragment;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,14 +27,17 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 public class ChallengeCardAdapter extends PagerAdapter {
+    private final ChallengeFragment context;
     //private Context context;
     private ArrayList<ChallengeCardModel> modelArrayList;
     private boolean isOpen;
+    private BottomNavViewModel bottomNavViewModel;
 
-    public ChallengeCardAdapter(ChallengeFragment context, ArrayList<ChallengeCardModel> modelArrayList, boolean isOpen) {
-        //this.context = context;
+    public ChallengeCardAdapter(ChallengeFragment context, ArrayList<ChallengeCardModel> modelArrayList, boolean isOpen, BottomNavViewModel bottomNavViewModel) {
+        this.context = context;
         this.isOpen = isOpen;
         this.modelArrayList = modelArrayList;
+        this.bottomNavViewModel = bottomNavViewModel;
     }
 
     @Override
@@ -129,13 +128,24 @@ public class ChallengeCardAdapter extends PagerAdapter {
                 }
             });
         } else {
+
             Button btn_strt = view.findViewById(R.id.btn_strt);
             Button btn_withdraw = view.findViewById(R.id.btn_withdraw);
+
             // handle accept click
             btn_strt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Toast.makeText(context, "Accepted challenge", Toast.LENGTH_SHORT).show();
+
+                    RunFragment fragment = new RunFragment();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("challengeId", challengeCardModel.getChallengeId());
+                    fragment.setArguments(bundle);
+
+                    FragmentManager fm = context.getParentFragmentManager();
+                    bottomNavViewModel.select(1);
+                    fm.beginTransaction().replace(R.id.container, fragment).commit();
                 }
             });
 

@@ -9,116 +9,161 @@
     android:background="@color/cardview_dark_background"
     tools:context=".RunFragment">
 
-    <RelativeLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/btn_layout">
-        <TextView
-            android:id="@+id/distance_text"
-            android:layout_width="80dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:gravity="bottom"
-            android:text="Distance"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+        android:layout_below="@+id/btn_layout"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/time_text"
-            android:layout_width="80dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@id/time_value"
-            android:gravity="bottom"
-            android:text="Time"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/steps_text"
-            android:layout_width="80dp"
-            android:layout_height="48dp"
-            android:layout_below="@id/distance_text"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:gravity="bottom"
-            android:text="Steps"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+            <LinearLayout
+                android:id="@+id/dist_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/pace_text"
-            android:layout_width="80dp"
-            android:layout_height="48dp"
-            android:layout_below="@id/time_text"
-            android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@id/pace_value"
-            android:gravity="bottom"
-            android:text="Pace"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+                <TextView
+                    android:id="@+id/distance_value"
+                    android:layout_width="100dp"
+                    android:layout_height="48dp"
+                    android:layout_above="@+id/distance_text"
+                    android:inputType="number"
+                    android:textColor="@color/white"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
-        <TextView
-            android:id="@+id/distance_value"
-            android:layout_width="100dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@id/distance_text"
-            android:gravity="bottom"
-            android:inputType="number"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:ignore="SpeakableTextPresentCheck" />
+                <TextView
+                    android:id="@+id/distance_text"
+                    android:layout_width="80dp"
+                    android:layout_height="48dp"
+                    android:text="Distance"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/time_value"
-            android:layout_width="100dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="bottom"
-            android:inputType="number"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:ignore="SpeakableTextPresentCheck" />
+            <LinearLayout
+                android:id="@+id/steps_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dist_layout"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/steps_value"
-            android:layout_width="100dp"
-            android:layout_height="48dp"
-            android:layout_below="@id/distance_value"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@id/steps_text"
-            android:gravity="bottom"
-            android:inputType="number"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
-        <TextView
-            android:id="@+id/pace_value"
-            android:layout_width="100dp"
-            android:layout_height="48dp"
-            android:layout_below="@id/time_value"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="bottom"
-            android:inputType="numberDecimal"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            tools:ignore="SpeakableTextPresentCheck" />
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/steps_value"
+                    android:layout_width="100dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/distance_value"
+                    android:layout_toRightOf="@id/steps_text"
+                    android:gravity="bottom"
+                    android:inputType="number"
+                    android:textColor="@color/white"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
+                <TextView
+                    android:id="@+id/steps_text"
+                    android:layout_width="80dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/distance_text"
+                    android:text="Steps"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/time_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/dist_layout"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/time_value"
+                    android:layout_width="100dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:gravity="bottom"
+                    android:inputType="number"
+                    android:textColor="@color/white"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    tools:ignore="SpeakableTextPresentCheck"
+                    tools:layout_editor_absoluteX="201dp"
+                    tools:layout_editor_absoluteY="64dp" />
+
+                <TextView
+                    android:id="@+id/time_text"
+                    android:layout_width="80dp"
+                    android:layout_height="48dp"
+                    android:layout_toLeftOf="@id/time_value"
+                    android:text="Time"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/pace_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/time_layout"
+                android:layout_toRightOf="@id/steps_layout"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/pace_value"
+                    android:layout_width="100dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/time_value"
+                    android:layout_alignParentRight="true"
+                    android:gravity="bottom"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/white"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/pace_text"
+                    android:layout_width="80dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/time_text"
+                    android:layout_toLeftOf="@id/pace_value"
+                    android:text="Pace"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/map"
+        android:layout_below="@id/map_layout"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_marginTop="10dp">
@@ -138,13 +183,26 @@
     </LinearLayout>
 
 
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:id="@+id/map_layout">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp">
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+
 
 </RelativeLayout>
