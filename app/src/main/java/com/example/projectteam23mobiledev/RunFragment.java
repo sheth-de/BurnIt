@@ -73,6 +73,8 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     double elapsedHours = 0;
     long elapsedSeconds = 0;
     double distanceValue = 0;
+    TextView calories;
+    double caloriesValue = 0;
     long tStart;
     TextView distance;
     TextView time;
@@ -110,6 +112,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         distance = (TextView) runView.findViewById(R.id.distance_value);
         time = (TextView) runView.findViewById(R.id.time_value);
         pace = (TextView) runView.findViewById(R.id.pace_value);
+        calories = (TextView) runView.findViewById(R.id.calories_value);
         sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
         countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         //sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
@@ -186,17 +189,29 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             stepCount++;
         }
+        //calculate Distance
         distanceValue = (float)(stepCount * 2.2) / (float)5280;
         String roundOffDistance = String.format("%.2f", distanceValue);
         distance.setText(String.valueOf(roundOffDistance));
+
+        //calculate steps
         steps.setText(String.valueOf(stepCount));
+
+        //calculate time
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
         elapsedSeconds = (tDelta / 1000);
         elapsedHours = (elapsedSeconds/(60.0 * 60.0));
+
+        //calculate pace
         speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
         String roundSpeed = String.format("%.2f", speed);
         pace.setText(String.valueOf(roundSpeed));
+
+        //calculate calories
+        caloriesValue = 0.05 * stepCount;
+        String roundCalories = String.format("%.2f", caloriesValue);
+        calories.setText(roundCalories);
     }
 
     @Override
