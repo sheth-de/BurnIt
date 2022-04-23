@@ -4,5 +4,6 @@ public class Constants {
         public static final String KEY_FCM_TOKEN = "fcmToken";
         public static final String KEY_EMAIL = "email";
         public static final String KEY_UID = "uid";
+        public static final String KEY_WALLET = "wallet";
 }
 

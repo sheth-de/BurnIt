@@ -4,6 +4,8 @@ import static android.content.ContentValues.TAG;
 
 import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_EMAIL;
 import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_UID;
+import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_WALLET;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -98,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                             Map<String, Object> data = new HashMap<>();
                             data.put(KEY_UID, user.getUid().toString());
                             data.put(KEY_EMAIL, user.getEmail().toString());
+                            data.put(KEY_WALLET, 1000);
 
 
                             db.collection("users")

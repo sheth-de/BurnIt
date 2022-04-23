@@ -16,6 +16,7 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_run.xml" value="0.31837606837606836" />
+        <entry key="app/src/main/res/layout/activity_run_stats.xml" value="0.31837606837606836" />
         <entry key="app/src/main/res/layout/bottom_navigation_menu.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/layout/card_item.xml" value="0.18229166666666666" />
         <entry key="app/src/main/res/layout/fragment_challenge.xml" value="0.175" />

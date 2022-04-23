@@ -1,19 +1,15 @@
 package com.example.projectteam23mobiledev;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.google.android.material.badge.BadgeDrawable;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;

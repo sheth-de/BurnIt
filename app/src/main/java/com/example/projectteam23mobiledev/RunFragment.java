@@ -104,6 +104,10 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         if (bundle != null) {
             challengeId  = bundle.getString("challengeId", null);
 //            Toast.makeText(getContext(), challengeId, Toast.LENGTH_SHORT).show();
+        } else {
+
+            // no challenege is asscoiated
+            challengeId = "0";
         }
 
 
@@ -145,6 +149,9 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                 Date d = new Date();
                 d.getTime();
 
+
+
+                RunModel run = new RunModel(currEmail, distanceValue, stepCount, speed, elapsedSeconds, challengeId);
                 RunModel run = new RunModel(currEmail, distanceValue, stepCount, speed, elapsedSeconds, caloriesValue);
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();

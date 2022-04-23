@@ -11,13 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.example.projectteam23mobiledev.BottomNavViewModel;
+import com.example.projectteam23mobiledev.Models.Challenge;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.example.projectteam23mobiledev.ChallengeFragment;
 import com.example.projectteam23mobiledev.Models.ChallengeCardModel;
 import com.example.projectteam23mobiledev.R;
 import com.example.projectteam23mobiledev.RunFragment;
 import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -142,24 +144,29 @@ public class ChallengeCardAdapter extends PagerAdapter {
                 @Override
                 public void onClick(View view) {
 
-//                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//
-//                    challengeCardModel.getChallenge().setStatus("ongoing");
-//                    ObjectMapper oMapper = new ObjectMapper();
-//                    // object -> Map
-//                    Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
-//                    //Log.e("doc id",challengeCardModel.getChallengeId() );
-//                    db.collection("challenges").document(challengeCardModel.getChallengeId())
-//                            .update(
-//                                    map
-//                            );
+                    String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                    String rcv_email = challengeCardModel.getChallenge().getReceiver();
+                    String snd_email = challengeCardModel.getChallenge().getSender();
+
+                    if (snd_email.equals(currEmail)) {
+                        challengeCardModel.getChallenge().setSendStatus(StatusEnum.STARTED);
+                    } else {
+                        challengeCardModel.getChallenge().setReceiverStatus(StatusEnum.STARTED);
+                    }
+
+                    ObjectMapper oMapper = new ObjectMapper();
+                    // object -> Map
+                    Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
+                    db.collection("challenges")
+                            .document(challengeCardModel.getChallengeId())
+                            .update(map);
 
                     RunFragment fragment = new RunFragment();
-
                     Bundle bundle = new Bundle();
                     bundle.putString("challengeId", challengeCardModel.getChallengeId());
                     fragment.setArguments(bundle);
-
                     FragmentManager fm = context.getParentFragmentManager();
                     bottomNavViewModel.select(1);
                     fm.beginTransaction().replace(R.id.container, fragment).commit();

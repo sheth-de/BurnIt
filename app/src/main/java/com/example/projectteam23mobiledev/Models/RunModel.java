@@ -8,7 +8,9 @@ public class RunModel implements Serializable {
     int steps;
     double speed;
     long seconds;
+    String challengeId;
 
+    public RunModel(String user, Double distance, int steps, double speed, long seconds, String challengeId) {
 
 
     double calories;
@@ -19,6 +21,15 @@ public class RunModel implements Serializable {
         this.steps = steps;
         this.speed = speed;
         this.seconds = seconds;
+        this.challengeId = challengeId;
+    }
+
+    public String getChallengeId() {
+        return challengeId;
+    }
+
+    public void setChallengeId(String challengeId) {
+        this.challengeId = challengeId;
         this.calories = calories;
     }
 
