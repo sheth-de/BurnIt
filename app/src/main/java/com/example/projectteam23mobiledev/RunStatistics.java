@@ -93,7 +93,8 @@ public class RunStatistics extends AppCompatActivity {
 //    {
 //        //do whatever you want the 'Back' button to do
 //        //as an example the 'Back' button is set to start a new Activity named 'NewActivity'
-//        this.startActivity(new Intent(RunStatistics.this,StartRunActivity.class));
+//        this.startActivityFromFragment();
+//        //this.startActivit(new Intent(RunStatistics.this,StartRunActivity.class));
 //
 //        return;
 //    }

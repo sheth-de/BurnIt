@@ -90,7 +90,9 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     SensorManager sensorManager;
     Sensor countSensor;
     Button stop;
+    Button pause;
     FirebaseAuth mAuth;
+    Handler hd;
 
     @Nullable
     @Override
@@ -105,7 +107,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         }
 
 
-
+        hd = new Handler();
         mAuth = FirebaseAuth.getInstance();
         String currEmail  = mAuth.getCurrentUser().getEmail();
         steps = (TextView) runView.findViewById(R.id.steps_value);
@@ -120,6 +122,20 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         tStart = System.currentTimeMillis();
         startTimer();
         fetchLocation();
+
+        pause = (Button) runView.findViewById(R.id.btn_pause);
+        pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isRunning) {
+                    //pauseTimer();
+                    onPause();
+                }
+
+                else
+                    onResume();
+            }
+        });
 
         stop = (Button) runView.findViewById(R.id.btn_stop);
         stop.setOnClickListener(new View.OnClickListener() {
@@ -180,40 +196,45 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
-        Sensor sensor = sensorEvent.sensor;
-        float[] values = sensorEvent.values;
-        int value = -1;
+        if(isRunning) {
 
-        if (values.length > 0) {
-            value = (int) values[0];
+            Sensor sensor = sensorEvent.sensor;
+            float[] values = sensorEvent.values;
+            int value = -1;
+
+            if (values.length > 0) {
+                value = (int) values[0];
+            }
+
+            if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+                stepCount++;
+            }
+            //calculate Distance
+            distanceValue = (float)(stepCount * 2.2) / (float)5280;
+            String roundOffDistance = String.format("%.2f", distanceValue);
+            distance.setText(String.valueOf(roundOffDistance));
+
+            //calculate steps
+            steps.setText(String.valueOf(stepCount));
+
+            //calculate time
+            long tEnd = System.currentTimeMillis();
+            long tDelta = tEnd - tStart;
+            elapsedSeconds = (tDelta / 1000);
+            elapsedHours = (elapsedSeconds/(60.0 * 60.0));
+
+            //calculate pace
+            speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
+            String roundSpeed = String.format("%.2f", speed);
+            pace.setText(String.valueOf(roundSpeed));
+
+            //calculate calories
+            caloriesValue = 0.05 * stepCount;
+            String roundCalories = String.format("%.2f", caloriesValue);
+            calories.setText(roundCalories);
         }
 
-        if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            stepCount++;
-        }
-        //calculate Distance
-        distanceValue = (float)(stepCount * 2.2) / (float)5280;
-        String roundOffDistance = String.format("%.2f", distanceValue);
-        distance.setText(String.valueOf(roundOffDistance));
 
-        //calculate steps
-        steps.setText(String.valueOf(stepCount));
-
-        //calculate time
-        long tEnd = System.currentTimeMillis();
-        long tDelta = tEnd - tStart;
-        elapsedSeconds = (tDelta / 1000);
-        elapsedHours = (elapsedSeconds/(60.0 * 60.0));
-
-        //calculate pace
-        speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
-        String roundSpeed = String.format("%.2f", speed);
-        pace.setText(String.valueOf(roundSpeed));
-
-        //calculate calories
-        caloriesValue = 0.05 * stepCount;
-        String roundCalories = String.format("%.2f", caloriesValue);
-        calories.setText(roundCalories);
     }
 
     @Override
@@ -343,31 +364,37 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
     }
 
+//    private void pauseTimer() {
+//        hd.removeCallbacks(runnable);
+//        reset.setEnabled(true);
+//    }
+
     private void startTimer()
     {
-        final Handler hd = new Handler();
 
-        hd.post(new Runnable() {
-            @Override
+            hd.post(new Runnable() {
+                @Override
 
-            public void run()
-            {
-                int hours_var = sec / 3600;
-                int minutes_var = (sec % 3600) / 60;
-                int secs_var = sec % 60;
-
-                String time_value = String.format(Locale.getDefault(),
-                        "%d:%02d:%02d", hours_var, minutes_var, secs_var);
-
-                time.setText(time_value);
-
-                if (isRunning)
+                public void run()
                 {
-                    sec++;
-                }
+                    int hours_var = sec / 3600;
+                    int minutes_var = (sec % 3600) / 60;
+                    int secs_var = sec % 60;
 
-                hd.postDelayed(this, 1000);
-            }
-        });
+                    String time_value = String.format(Locale.getDefault(),
+                            "%d:%02d:%02d", hours_var, minutes_var, secs_var);
+
+                    time.setText(time_value);
+
+                    if (isRunning)
+                    {
+                        sec++;
+                    }
+
+                    hd.postDelayed(this, 1000);
+                }
+            });
+
+
     }
 }
