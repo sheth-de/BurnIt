@@ -129,7 +129,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                 Date d = new Date();
                 d.getTime();
 
-                RunModel run = new RunModel(currEmail, distanceValue, stepCount, speed, elapsedSeconds);
+                RunModel run = new RunModel(currEmail, distanceValue, stepCount, speed, elapsedSeconds, caloriesValue);
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("runstats")
