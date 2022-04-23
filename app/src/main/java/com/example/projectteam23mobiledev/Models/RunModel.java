@@ -1,6 +1,8 @@
 package com.example.projectteam23mobiledev.Models;
 
-public class RunModel {
+import java.io.Serializable;
+
+public class RunModel implements Serializable {
     String user;
     Double distance;
     int steps;
