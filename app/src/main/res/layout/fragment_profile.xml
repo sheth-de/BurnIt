@@ -1,15 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Profile Fragment" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/userTotalPoints"
+        android:layout_width="73dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="272dp"
+        android:fontFamily="sans-serif"
+        android:includeFontPadding="false"
+        android:text="100"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.624"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userEmail"
+        android:layout_width="243dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="52dp"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnLogOut"
+        android:layout_width="193dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="108dp"
+        android:text="Log Out"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelProfileTotalChallenges" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="157dp"
+        android:layout_height="33dp"
+        android:layout_marginBottom="28dp"
+        android:text="Refer a Friend!"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogOut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/labelProfileTotalChallenges"
+        android:layout_width="185dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="24dp"
+        android:text="Total Challenges Completed:"
+        app:layout_constraintEnd_toStartOf="@+id/textProfileTotalChallenges"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/labelProfileAverageSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/labelProfileAverageSpeed" />
+
+    <TextView
+        android:id="@+id/labelProfileAverageSpeed"
+        android:layout_width="149dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="52dp"
+        android:text="Average Speed:"
+        app:layout_constraintEnd_toStartOf="@+id/textProfileAverageSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/labelProfileMiles" />
+
+    <TextView
+        android:id="@+id/labelProfileMiles"
+        android:layout_width="86dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="372dp"
+        android:text="Miles:"
+        app:layout_constraintEnd_toStartOf="@+id/textProfileMiles"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/labelProfileAverageSpeed"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textProfileMiles"
+        android:layout_width="78dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="372dp"
+        android:text="0.00"
+        app:layout_constraintStart_toStartOf="@+id/textProfileAverageSpeed"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textProfileAverageSpeed"
+        android:layout_width="79dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="24dp"
+        android:text="0.00"
+        app:layout_constraintStart_toStartOf="@+id/textProfileTotalChallenges"
+        app:layout_constraintTop_toBottomOf="@+id/textProfileMiles" />
+
+    <TextView
+        android:id="@+id/textProfileTotalChallenges"
+        android:layout_width="79dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="64dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textProfileAverageSpeed" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="252dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/run_coins_final"
+        app:layout_constraintEnd_toStartOf="@+id/userTotalPoints"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="134dp"
+        android:layout_height="123dp"
+        android:layout_marginTop="96dp"
+        android:src="@drawable/purple_pl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
