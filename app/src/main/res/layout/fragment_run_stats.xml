@@ -15,8 +15,11 @@
         android:id="@+id/dtsp_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_layout"
+        android:layout_below="@+id/map_layout"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -41,9 +44,9 @@
                     android:textColor="@color/white"
                     android:textSize="25dp"
                     android:textStyle="bold"
+                    tools:ignore="SpeakableTextPresentCheck"
                     android:layout_alignParentRight="true"
-                    android:gravity="bottom"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    android:gravity="bottom"/>
 
                 <TextView
                     android:id="@+id/distance_text"
@@ -191,9 +194,9 @@
                     android:textColor="@color/white"
                     android:textSize="25dp"
                     android:textStyle="bold"
+                    tools:ignore="SpeakableTextPresentCheck"
                     android:layout_alignParentRight="true"
-                    android:gravity="bottom"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    android:gravity="bottom"/>
 
                 <TextView
                     android:id="@+id/calories_text"
@@ -208,50 +211,92 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/btn_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/map_layout"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="10dp">
-        <Button
-            android:id="@+id/btn_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PAUSE"
-            android:layout_marginRight="10dp"/>
-
-        <Button
-            android:id="@+id/btn_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="STOP" />
-    </LinearLayout>
-
-
-
 
     <LinearLayout
+        android:id="@+id/map_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp"
-        android:id="@+id/map_layout">
+        android:padding="10dp">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="10dp">
-            <fragment
-                android:id="@+id/map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                />
-        </androidx.cardview.widget.CardView>
+            android:layout_gravity="center"
+            android:text="Congrats!!"
+            android:textColor="@color/white"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="You completed the run!!"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ch_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dtsp_layout"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Challenge details:"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_ch_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No challenge linked"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ch_layout"
+        android:layout_margin="15dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wallet Balance:"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_wallet_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7878xp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
+
 
 
 

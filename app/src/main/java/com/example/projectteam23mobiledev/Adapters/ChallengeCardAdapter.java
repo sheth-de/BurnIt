@@ -166,6 +166,7 @@ public class ChallengeCardAdapter extends PagerAdapter {
                     RunFragment fragment = new RunFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("challengeId", challengeCardModel.getChallengeId());
+                    bundle.putSerializable("challenge", challengeCardModel.getChallenge());
                     fragment.setArguments(bundle);
                     FragmentManager fm = context.getParentFragmentManager();
                     bottomNavViewModel.select(1);

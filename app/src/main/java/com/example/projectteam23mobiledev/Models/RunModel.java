@@ -3,25 +3,33 @@ package com.example.projectteam23mobiledev.Models;
 import java.io.Serializable;
 
 public class RunModel implements Serializable {
+    String id;
     String user;
     Double distance;
     int steps;
     double speed;
     long seconds;
     String challengeId;
-
-    public RunModel(String user, Double distance, int steps, double speed, long seconds, String challengeId) {
-
-
     double calories;
 
-    public RunModel(String user, Double distance, int steps, double speed, long seconds, double calories) {
+    public RunModel(String user, Double distance,
+                    int steps, double speed, long seconds,
+                    String challengeId, double calories) {
         this.user = user;
         this.distance = distance;
         this.steps = steps;
         this.speed = speed;
         this.seconds = seconds;
         this.challengeId = challengeId;
+        this.calories = calories;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getChallengeId() {
@@ -30,7 +38,6 @@ public class RunModel implements Serializable {
 
     public void setChallengeId(String challengeId) {
         this.challengeId = challengeId;
-        this.calories = calories;
     }
 
     public double getCalories() {

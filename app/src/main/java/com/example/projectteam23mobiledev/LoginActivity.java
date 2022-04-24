@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -101,6 +102,8 @@ public class LoginActivity extends AppCompatActivity {
                             data.put(KEY_UID, user.getUid().toString());
                             data.put(KEY_EMAIL, user.getEmail().toString());
                             data.put(KEY_WALLET, 1000);
+
+                            CollectionReference users = db.collection("users");
 
 
                             db.collection("users")

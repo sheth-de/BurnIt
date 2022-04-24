@@ -2,7 +2,9 @@ package com.example.projectteam23mobiledev.Models;
 
 import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
 
-public class Challenge {
+import java.io.Serializable;
+
+public class Challenge implements Serializable {
     String type;
     Double distance;
     Double time;
