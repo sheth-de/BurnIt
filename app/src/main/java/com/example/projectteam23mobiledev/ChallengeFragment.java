@@ -1,5 +1,6 @@
 package com.example.projectteam23mobiledev;
 
+
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
@@ -42,12 +43,14 @@ public class ChallengeFragment extends Fragment {
     private ChallengeCardAdapter challengeCardAdapter;
     private ChallengeCardAdapter onGoingChallengeCardAdapter;
     private Button fragmentBtnCreateChallenge;
+
     FirebaseAuth mAuth;
     private BottomNavViewModel bottomNavViewModel;
 
     public ChallengeFragment(BottomNavViewModel bottomNavViewModel) {
         this.bottomNavViewModel = bottomNavViewModel;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,8 +66,10 @@ public class ChallengeFragment extends Fragment {
             }
         });
 
+
         mAuth = FirebaseAuth.getInstance();
         String currEmail  = mAuth.getCurrentUser().getEmail();
+
 
         openChViewPager = view.findViewById(R.id.vp_open_ch);
 
