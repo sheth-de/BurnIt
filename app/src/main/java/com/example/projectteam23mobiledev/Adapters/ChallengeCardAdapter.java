@@ -11,13 +11,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.example.projectteam23mobiledev.BottomNavViewModel;
+import com.example.projectteam23mobiledev.Models.Challenge;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.example.projectteam23mobiledev.ChallengeFragment;
 import com.example.projectteam23mobiledev.Models.ChallengeCardModel;
 import com.example.projectteam23mobiledev.R;
 import com.example.projectteam23mobiledev.RunFragment;
+import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,17 +102,61 @@ public class ChallengeCardAdapter extends PagerAdapter {
             btn_accpt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                    challengeCardModel.getChallenge().setStatus("ongoing");
-                    ObjectMapper oMapper = new ObjectMapper();
-                    // object -> Map
-                    Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
-                    //Log.e("doc id",challengeCardModel.getChallengeId() );
-                    db.collection("challenges").document(challengeCardModel.getChallengeId())
-                            .update(
-                                    map
-                            );
+                    // check if curr user has balance to accept
+                    // show toast
+
+                    String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("users")
+                            .whereEqualTo("email", currEmail)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Long wallBal = (Long) document.getData().get("wallet");
+                                            Challenge c = challengeCardModel.getChallenge();
+                                            int minPoint = c.getMinPoints();
+                                            if (wallBal > minPoint) {
+                                                // can play
+
+
+                                                wallBal -= minPoint;
+
+                                                c.setStatus("ongoing");
+                                                c.setReceiverStatus(StatusEnum.ACCEPTED);
+                                                c.setTotalCredit(c.getTotalCredit() + minPoint);
+
+                                                // deduct points from wallet
+                                                db.collection("users").document(document.getId())
+                                                        .update(
+                                                                "wallet", wallBal
+                                                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        ObjectMapper oMapper = new ObjectMapper();
+                                                        // object -> Map
+                                                        Map<String, Object> map = oMapper
+                                                                .convertValue(challengeCardModel.getChallenge(), Map.class);
+                                                        //Log.e("doc id",challengeCardModel.getChallengeId() );
+                                                        db.collection("challenges")
+                                                                .document(challengeCardModel.getChallengeId())
+                                                                .update(map);
+                                                    }
+                                                });
+
+
+
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+
+
                 }
             });
 
@@ -116,15 +168,52 @@ public class ChallengeCardAdapter extends PagerAdapter {
 
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                    challengeCardModel.getChallenge().setStatus("closed");
-                    ObjectMapper oMapper = new ObjectMapper();
-                    // object -> Map
-                    Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
-                    //Log.e("doc id",challengeCardModel.getChallengeId() );
-                    db.collection("challenges").document(challengeCardModel.getChallengeId())
-                            .update(
-                                    map
-                            );
+                    Challenge c = challengeCardModel.getChallenge();
+
+                    String oppEmail = c.getSender();
+                    db.collection("users")
+                            .whereEqualTo("email", oppEmail)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Long wallBal = (Long) document.getData().get("wallet");
+                                            Challenge c = challengeCardModel.getChallenge();
+                                            int minPoint = c.getMinPoints();
+
+                                            wallBal += minPoint;
+                                            c.setTotalCredit(0);
+
+                                            // deduct points from wallet
+                                            db.collection("users").document(document.getId())
+                                                    .update(
+                                                            "wallet", wallBal
+                                                    ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+
+                                                    c.setStatus("closed");
+                                                    c.setReceiverStatus(StatusEnum.DECLINED);
+
+                                                    ObjectMapper oMapper = new ObjectMapper();
+                                                    // object -> Map
+                                                    Map<String, Object> map = oMapper.convertValue(c, Map.class);
+                                                    //Log.e("doc id",challengeCardModel.getChallengeId() );
+                                                    db.collection("challenges")
+                                                            .document(challengeCardModel.getChallengeId())
+                                                            .update(map);
+
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }
+                            });
+
+
                 }
             });
         } else {
@@ -132,17 +221,35 @@ public class ChallengeCardAdapter extends PagerAdapter {
             Button btn_strt = view.findViewById(R.id.btn_strt);
             Button btn_withdraw = view.findViewById(R.id.btn_withdraw);
 
-            // handle accept click
+            // handle start click
             btn_strt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    RunFragment fragment = new RunFragment();
+                    String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+                    String rcv_email = challengeCardModel.getChallenge().getReceiver();
+                    String snd_email = challengeCardModel.getChallenge().getSender();
+
+                    if (snd_email.equals(currEmail)) {
+                        challengeCardModel.getChallenge().setSendStatus(StatusEnum.STARTED);
+                    } else {
+                        challengeCardModel.getChallenge().setReceiverStatus(StatusEnum.STARTED);
+                    }
+
+                    ObjectMapper oMapper = new ObjectMapper();
+                    // object -> Map
+                    Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
+                    db.collection("challenges")
+                            .document(challengeCardModel.getChallengeId())
+                            .update(map);
+
+                    RunFragment fragment = new RunFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("challengeId", challengeCardModel.getChallengeId());
+                    bundle.putSerializable("challenge", challengeCardModel.getChallenge());
                     fragment.setArguments(bundle);
-
                     FragmentManager fm = context.getParentFragmentManager();
                     bottomNavViewModel.select(1);
                     fm.beginTransaction().replace(R.id.container, fragment).commit();
@@ -150,24 +257,63 @@ public class ChallengeCardAdapter extends PagerAdapter {
             });
 
 
-            //handle decline click
+            //handle withdraw click
             btn_withdraw.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                    challengeCardModel.getChallenge().setStatus("closed");
-                    ObjectMapper oMapper = new ObjectMapper();
-                    // object -> Map
-                    Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
-                    //Log.e("doc id",challengeCardModel.getChallengeId() );
-                    db.collection("challenges").document(challengeCardModel.getChallengeId())
-                            .update(
-                                    map
-                            );
+                    Challenge c = challengeCardModel.getChallenge();
 
 
-                    // implment points allocations here
+                    // implment points allocations here after withdraw action
+
+                    // the other user gets all the points
+                    String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                    String oppEmail = currEmail.equals(c.getSender())? c.getReceiver(): c.getSender();
+                    db.collection("users")
+                            .whereEqualTo("email", oppEmail)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Long wallBal = (Long) document.getData().get("wallet");
+                                            Challenge c = challengeCardModel.getChallenge();
+                                            int totalCredit = c.getTotalCredit();
+
+                                            wallBal += totalCredit;
+                                            c.setTotalCredit(0);
+
+                                            // add points to wallet
+                                            db.collection("users").document(document.getId())
+                                                    .update(
+                                                            "wallet", wallBal
+                                                    ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+
+                                                    c.setStatus("closed");
+                                                    ObjectMapper oMapper = new ObjectMapper();
+                                                    // object -> Map
+                                                    Map<String, Object> map = oMapper.convertValue(c, Map.class);
+                                                    //Log.e("doc id",challengeCardModel.getChallengeId() );
+                                                    db.collection("challenges").document(challengeCardModel.getChallengeId())
+                                                            .update(map);
+
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }
+                            });
+
+
+
+
                 }
             });
         }

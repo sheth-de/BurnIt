@@ -21,6 +21,8 @@ import android.widget.Button;
 import com.example.projectteam23mobiledev.Adapters.ChallengeCardAdapter;
 import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Models.ChallengeCardModel;
+import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -101,6 +103,8 @@ public class ChallengeFragment extends Fragment {
                             String type = (String) document.getData().get("type");
                             Long ch_date = (Long) document.getData().get("timeStamp");
                             String ch_status = (String) document.getData().get("status");
+                            String ch_snd_status = (String) document.getData().get("sendStatus");
+                            String ch_rcv_status = (String) document.getData().get("receiverStatus");
 
 
                             String challengeTitle = String.format("%s based", type);
@@ -133,12 +137,15 @@ public class ChallengeFragment extends Fragment {
                                                     challenge));
                                             break;
                                         case "ongoing":
-                                            ongoingModelArrayList.add(new ChallengeCardModel(challengeTitle,
-                                                    details,
-                                                    ch_date,
-                                                    sndId.substring(0, sndId.indexOf('@')),
-                                                    document.getId(),
-                                                    challenge));
+                                            if ((currEmail.equals(sndId) && ch_snd_status.equals(StatusEnum.ACCEPTED.toString()))||
+                                                    (currEmail.equals(rcvId) && ch_rcv_status.equals(StatusEnum.ACCEPTED.toString()))) {
+                                                ongoingModelArrayList.add(new ChallengeCardModel(challengeTitle,
+                                                        details,
+                                                        ch_date,
+                                                        sndId.substring(0, sndId.indexOf('@')),
+                                                        document.getId(),
+                                                        challenge));
+                                            }
                                             break;
                                         default: break;
 
@@ -151,18 +158,25 @@ public class ChallengeFragment extends Fragment {
 //                                    String status = (String) dc.getDocument().getData().get("status");
                                     switch (ch_status){
                                         case "closed":
-                                            modelArrayList.removeIf(c -> c.getChallengeId().equals(dc.getDocument().getId()));
-                                            ongoingModelArrayList.removeIf(c -> c.getChallengeId().equals(dc.getDocument().getId()));
+                                            modelArrayList.removeIf(c -> c.getChallengeId()
+                                                    .equals(dc.getDocument().getId()));
+                                            ongoingModelArrayList.removeIf(c -> c.getChallengeId()
+                                                    .equals(dc.getDocument().getId()));
                                             break;
                                         case "ongoing":
-                                            modelArrayList.removeIf(c -> c.getChallengeId().equals(dc.getDocument().getId()));
-                                            ongoingModelArrayList.removeIf(c -> c.getChallengeId().equals(dc.getDocument().getId()));
-                                            ongoingModelArrayList.add(new ChallengeCardModel(challengeTitle,
-                                                    details,
-                                                    ch_date,
-                                                    sndId.substring(0, sndId.indexOf('@')),
-                                                    document.getId(),
-                                                    challenge));
+                                            modelArrayList.removeIf(c -> c.getChallengeId()
+                                                    .equals(dc.getDocument().getId()));
+                                            ongoingModelArrayList.removeIf(c -> c.getChallengeId()
+                                                    .equals(dc.getDocument().getId()));
+                                            if ((currEmail.equals(sndId) && ch_snd_status.equals(StatusEnum.ACCEPTED.toString()))||
+                                                    (currEmail.equals(rcvId) && ch_rcv_status.equals(StatusEnum.ACCEPTED.toString()))) {
+                                                ongoingModelArrayList.add(new ChallengeCardModel(challengeTitle,
+                                                        details,
+                                                        ch_date,
+                                                        sndId.substring(0, sndId.indexOf('@')),
+                                                        document.getId(),
+                                                        challenge));
+                                            }
                                             break;
                                         default:
                                             break;

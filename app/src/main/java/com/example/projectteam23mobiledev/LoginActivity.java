@@ -4,6 +4,8 @@ import static android.content.ContentValues.TAG;
 
 import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_EMAIL;
 import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_UID;
+import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_WALLET;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -98,6 +101,9 @@ public class LoginActivity extends AppCompatActivity {
                             Map<String, Object> data = new HashMap<>();
                             data.put(KEY_UID, user.getUid().toString());
                             data.put(KEY_EMAIL, user.getEmail().toString());
+                            data.put(KEY_WALLET, 1000);
+
+                            CollectionReference users = db.collection("users");
 
 
                             db.collection("users")

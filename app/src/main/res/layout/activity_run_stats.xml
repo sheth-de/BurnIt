@@ -17,12 +17,12 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="120dp"
         android:ems="10"
+        android:gravity="center"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:text="Congrats"
         android:textColor="@color/white"
-        android:gravity="center"
-        android:textSize="50dp"
-        android:text="Congrats" />
+        android:textSize="50dp" />
 
     <EditText
         android:id="@+id/editTextTextPersonName1"
@@ -33,12 +33,12 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="224dp"
         android:ems="10"
+        android:gravity="center"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:text="You completed the run"
         android:textColor="@color/white"
-        android:gravity="center"
-        android:textSize="30dp"
-        android:text="You completed the run" />
+        android:textSize="30dp" />
 
     <TextView
         android:id="@+id/distance_text_stats"

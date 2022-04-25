@@ -1,6 +1,10 @@
 package com.example.projectteam23mobiledev.Models;
 
-public class Challenge {
+import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
+
+import java.io.Serializable;
+
+public class Challenge implements Serializable {
     String type;
     Double distance;
     Double time;
@@ -10,12 +14,26 @@ public class Challenge {
     Long timeStamp;
     Integer totalCredit;
     String status;
+    StatusEnum sendStatus;
+    StatusEnum receiverStatus;
 
+    public StatusEnum getSendStatus() {
+        return sendStatus;
+    }
 
-    public Challenge(){};
+    public void setSendStatus(StatusEnum sendStatus) {
+        this.sendStatus = sendStatus;
+    }
 
+    public StatusEnum getReceiverStatus() {
+        return receiverStatus;
+    }
 
-    public Challenge(String type, Double distance, Double time, String receiver, String sender, Integer minPoints, Long timeStamp, Integer totalCredit, String status) {
+    public void setReceiverStatus(StatusEnum receiverStatus) {
+        this.receiverStatus = receiverStatus;
+    }
+
+    public Challenge(String type, Double distance, Double time, String receiver, String sender, Integer minPoints, Long timeStamp, Integer totalCredit, String status, StatusEnum sendStatus, StatusEnum receiverStatus) {
         this.type = type;
         this.distance = distance;
         this.time = time;
@@ -25,7 +43,11 @@ public class Challenge {
         this.timeStamp = timeStamp;
         this.totalCredit = totalCredit;
         this.status = status;
+        this.sendStatus = sendStatus;
+        this.receiverStatus = receiverStatus;
     }
+
+    public Challenge(){};
 
     public String getType() {
         return type;
