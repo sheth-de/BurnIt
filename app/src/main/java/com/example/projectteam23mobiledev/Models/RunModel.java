@@ -12,6 +12,9 @@ public class RunModel implements Serializable {
     String challengeId;
     double calories;
 
+    public RunModel() {
+    }
+
     public RunModel(String user, Double distance,
                     int steps, double speed, long seconds,
                     String challengeId, double calories) {

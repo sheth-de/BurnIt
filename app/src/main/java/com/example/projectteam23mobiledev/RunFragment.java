@@ -38,6 +38,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Models.RunModel;
+import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -63,6 +64,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -168,131 +170,255 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                 // get run model of the other user
                 final RunModel[] opp_run = new RunModel[1];
+
+                Query q = db.collection("runstats")
+                        .whereEqualTo("challengeId", challengeId);
+//                        .whereNotEqualTo("user", currEmail);
+
+//                q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+////                                        opp_run[0] = (RunModel) document.toObject(RunModel.class);
+//
+//                                Log.d(TAG," user: "+(String) document.getData().get("user"));
+//
+//                                String usr = (String) document.getData().get("user");
+//
+//                                if (!usr.equals(currEmail)) {
+//                                    // the other user exists
+//                                }
+//                            }
+//                            Log.d(TAG," Bingo");
+//                        } else {
+//                            Log.d(TAG, "the query doesn't work");
+//                        }
+//                    }
+//                });
+
                 db.collection("runstats")
                         .whereEqualTo("challengeId", challengeId)
-                        .whereNotEqualTo("user", currEmail)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                boolean isEmptyDoc = true;
                                 if (task.isSuccessful()) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        opp_run[0] = (RunModel) document.toObject(RunModel.class);
-                                        break;
+                                        String usr = (String) document.getData().get("user");
+                                        isEmptyDoc = false;
+
+                                        if (!usr.equals(currEmail)) {
+                                            // the other user exists
+                                            opp_run[0] = (RunModel) document.toObject(RunModel.class);
+
+                                            if (opp_run[0] != null && challenge != null) {
+
+                                                // compare run models
+                                                boolean res = false;
+                                                if (challenge.getType().equals("distance")) {
+
+                                                    if (opp_run[0].getSeconds() > run.getSeconds()) {
+                                                        res = true;
+                                                    }
+                                                } else {
+                                                    if (opp_run[0].getDistance() < run.getDistance()) {
+                                                        res = true;
+                                                    }
+                                                }
+
+                                                String vicEmail = currEmail;
+
+                                                // add result in challenge
+                                                if (res) {
+                                                    // he won
+                                                    if (challenge.getSender().equals(currEmail)) {
+                                                        challenge.setStatus("snd");
+                                                        challenge.setSendStatus(StatusEnum.COMPLETED);
+                                                    } else {
+                                                        challenge.setStatus("rcv");
+                                                        challenge.setReceiverStatus(StatusEnum.COMPLETED);
+                                                    }
+
+                                                } else {
+                                                    // he lost
+                                                    if (challenge.getSender().equals(currEmail)) {
+                                                        challenge.setStatus("rcv");
+                                                        vicEmail = challenge.getReceiver();
+                                                        challenge.setSendStatus(StatusEnum.COMPLETED);
+
+                                                    } else {
+
+                                                        challenge.setStatus("snd");
+                                                        vicEmail = challenge.getSender();
+                                                        challenge.setReceiverStatus(StatusEnum.COMPLETED);
+                                                    }
+                                                }
+
+                                                int vicPoints = challenge.getTotalCredit();
+                                                challenge.setTotalCredit(0);
+
+                                                // add money to victor in wallet
+                                                final String[] usrDocId = {""};
+                                                final long[] bal = new long[1];
+                                                db.collection("users")
+                                                        .whereEqualTo("email", vicEmail)
+                                                        .limit(1)
+                                                        .get()
+                                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                        usrDocId[0] = document.getId();
+                                                                        bal[0] = (long) document.getData().get("wallet");
+
+                                                                        if (usrDocId[0].equals("")) {
+                                                                            // didn;t get the user return
+                                                                            return;
+                                                                        } else {
+                                                                            Long newBal = bal[0] + vicPoints;
+
+                                                                            //add money to user db wallet
+                                                                            db.collection("users")
+                                                                                    .document(usrDocId[0])
+                                                                                    .update(
+                                                                                            "wallet", newBal
+                                                                                    )
+                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onSuccess(Void unused) {
+
+                                                                                            // now update the challenge
+                                                                                            ObjectMapper oMapper = new ObjectMapper();
+                                                                                            Map<String, Object> map = oMapper.convertValue(challenge, Map.class);
+                                                                                            db.collection("challenges")
+                                                                                                    .document(challengeId)
+                                                                                                    .update(map)
+                                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                        @Override
+                                                                                                        public void onSuccess(Void unused) {
+
+                                                                                                            db.collection("runstats")
+                                                                                                                    .add(run)
+                                                                                                                    .addOnSuccessListener(documentReference -> {
+                                                                                                                        run.setId(documentReference.getId());
+
+                                                                                                                        Fragment fragment = new RunStatsFragment();
+
+                                                                                                                        Bundle bundle = new Bundle();
+                                                                                                                        bundle.putSerializable("runStats", run);
+                                                                                                                        fragment.setArguments(bundle);
+
+                                                                                                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                                                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                                                                        fragmentTransaction.replace(R.id.container, fragment);
+                                                                                                                        fragmentTransaction.addToBackStack(null);
+                                                                                                                        fragmentTransaction.commit();
+
+                                                                                                                    })
+                                                                                                                    .addOnFailureListener(exception -> {
+                                                                                                                        Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                                                    });
+
+                                                                                                        }
+                                                                                                    });
+                                                                                        }
+                                                                                    });
+                                                                        }
+                                                                        break;
+                                                                    }
+                                                                } else {
+                                                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                                                }
+                                                            }
+                                                        });
+
+
+                                            }
+                                        }
+                                    }
+
+                                    if(isEmptyDoc) {
+                                        // if no opposite runner but its a challenge
+                                        if (opp_run[0] == null && challenge!=null) {
+                                            if (currEmail.equals(challenge.getSender())) {
+                                                challenge.setSendStatus(StatusEnum.COMPLETED);
+                                            } else {
+                                                challenge.setReceiverStatus(StatusEnum.COMPLETED);
+                                            }
+
+                                            ObjectMapper oMapper = new ObjectMapper();
+                                            // object -> Map
+                                            Map<String, Object> map = oMapper.convertValue(challenge, Map.class);
+                                            db.collection("challenges")
+                                                    .document(challengeId)
+                                                    .update(map)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            db.collection("runstats")
+                                                                    .add(run)
+                                                                    .addOnSuccessListener(documentReference -> {
+
+                                                                        run.setId(documentReference.getId());
+
+                                                                        Fragment fragment = new RunStatsFragment();
+
+                                                                        Bundle bundle = new Bundle();
+                                                                        bundle.putSerializable("runStats", run);
+                                                                        fragment.setArguments(bundle);
+
+                                                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                        fragmentTransaction.replace(R.id.container, fragment);
+                                                                        fragmentTransaction.addToBackStack(null);
+                                                                        fragmentTransaction.commit();
+
+                                                                    })
+                                                                    .addOnFailureListener(exception -> {
+                                                                        Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                    });
+                                                        }
+                                                    });
+                                        } else {
+
+                                            // if no challenge and just a normal
+                                            db.collection("runstats")
+                                                    .add(run)
+                                                    .addOnSuccessListener(documentReference -> {
+//
+
+                                                        run.setId(documentReference.getId());
+
+                                                        Fragment fragment = new RunStatsFragment();
+
+                                                        Bundle bundle = new Bundle();
+                                                        bundle.putSerializable("runStats", run);
+                                                        fragment.setArguments(bundle);
+
+                                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                        fragmentTransaction.replace(R.id.container, fragment);
+                                                        fragmentTransaction.addToBackStack(null);
+                                                        fragmentTransaction.commit();
+
+                                                    })
+                                                    .addOnFailureListener(exception -> {
+                                                        Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    });
+                                        }
                                     }
                                 } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                    Log.d(TAG, "empty runner : "+opp_run[0]);
+
+
+
+
+
                                 }
                             }
-                        });
-
-                if (opp_run[0] != null && challenge != null) {
-                    // compare run models
-                    boolean res = false;
-                    if (challenge.getType().equals("distance")) {
-
-                        if (opp_run[0].getSeconds() > run.getSeconds()) {
-                            res = true;
-                        }
-                    } else {
-                        if (opp_run[0].getDistance() < run.getDistance()) {
-                            res = true;
-                        }
-                    }
-
-                    String vicEmail = currEmail;
-                    // add result in challenge
-                    if(res) {
-                        // he won
-                        if (challenge.getSender().equals(currEmail)) {
-                            challenge.setStatus("snd");
-                        } else {
-                            challenge.setStatus("rcv");
-                        }
-
-                    } else {
-                        // he lost
-                        if (challenge.getSender().equals(currEmail)) {
-                            challenge.setStatus("rcv");
-                            vicEmail = challenge.getReceiver();
-
-                        } else {
-
-                            challenge.setStatus("snd");
-                            vicEmail = challenge.getSender();
-
-                        }
-                    }
-
-                    int vicPoints = challenge.getTotalCredit();
-                    challenge.setTotalCredit(0);
-
-                    // add money to victor in wallet
-
-                    final String[] usrDocId = {""};
-                    final long[] bal = new long[1];
-                    db.collection("users")
-                            .whereEqualTo("email", vicEmail)
-                            .limit(1)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            usrDocId[0] = document.getId();
-                                            bal[0] = (long) document.getData().get("wallet");
-                                            break;
-                                        }
-                                    } else {
-                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                    }
-                                }
-                            });
-
-                    if(usrDocId[0].equals("")){
-                        // didn;t get the user return
-                        return;
-                    } else {
-                        Long newBal = bal[0] + vicPoints;
-                        db.collection("users")
-                                .document(usrDocId[0])
-                                .update(
-                                        "wallet", newBal
-                                );
-                    }
-
-                    ObjectMapper oMapper = new ObjectMapper();
-                    // object -> Map
-                    Map<String, Object> map = oMapper.convertValue(challenge, Map.class);
-                    db.collection("challenges")
-                            .document(challengeId)
-                            .update(map);
-
-                }
-
-                db.collection("runstats")
-                        .add(run)
-                        .addOnSuccessListener(documentReference -> {
-                            //openNewActivity(run);
-
-                            run.setId(documentReference.getId());
-
-                            Fragment fragment = new RunStatsFragment();
-
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("runStats", run);
-                            fragment.setArguments(bundle);
-
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.container, fragment);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-                            //Toast.makeText(getApplicationContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(exception -> {
-                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
                         });
 
                 onStop();
@@ -300,6 +426,10 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             }
         });
         return runView;
+    }
+
+    public void stuff() {
+
     }
 
     public void openNewActivity(RunModel runModel){

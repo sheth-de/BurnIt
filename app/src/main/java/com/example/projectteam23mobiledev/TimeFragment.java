@@ -16,11 +16,13 @@ import android.widget.Toast;
 import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
@@ -114,6 +116,7 @@ public class TimeFragment extends Fragment {
                 Integer finalMinPoints = minPoints;
                 Integer finalMinPoints1 = minPoints;
                 final Boolean[] flag = {false};
+                String currEmail = mAuth.getCurrentUser().getEmail();
                 query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -132,25 +135,60 @@ public class TimeFragment extends Fragment {
                                             StatusEnum.ACCEPTED,
                                             StatusEnum.OPEN
                                     );
-                                    db.collection("challenges")
-                                            .add(challenge)
-                                            .addOnSuccessListener(documentReference -> {
-                                            })
-                                            .addOnFailureListener(exception -> {
-                                                Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    // deduct points from sender of the challenger wallet
+                                    db.collection("users")
+                                            .whereEqualTo("email", currEmail)
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                            Long wallBal = (Long) document.getData().get("wallet");
+                                                            Challenge c = challenge;
+                                                            int minPoint = c.getMinPoints();
+                                                            if (wallBal > minPoint) {
+                                                                // can play
+                                                                wallBal -= minPoint;
+
+                                                                // deduct points from wallet
+                                                                db.collection("users").document(document.getId())
+                                                                        .update(
+                                                                                "wallet", wallBal
+                                                                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void unused) {
+                                                                        db.collection("challenges")
+                                                                                .add(challenge)
+                                                                                .addOnSuccessListener(documentReference -> {
+                                                                                    flag[0] =true;
+                                                                                    Toast.makeText(getActivity(), "Challenge created successfully", Toast.LENGTH_SHORT).show();
+                                                                                    Intent intent = new Intent(getContext(), MainActivity.class);
+                                                                                    startActivity(intent);
+                                                                                })
+                                                                                .addOnFailureListener(exception -> {
+                                                                                    Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                });
+
+                                                                    }
+                                                                });
+
+
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             });
-                                    flag[0] =true;
-                                    Toast.makeText(getActivity(), "Challenge created successfully", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getContext(), MainActivity.class);
-                                    startActivity(intent);
 
                                 } else {
 
                                 }
                             }
-                            if(flag[0]==false){
-                                Toast.makeText(getActivity(), "Enter valid user email", Toast.LENGTH_SHORT).show();
-                            }
+//                            if(flag[0]==false){
+//                                Toast.makeText(getActivity(), "Enter valid user email", Toast.LENGTH_SHORT).show();
+//                            }
                         }
                         else {
                             Toast.makeText(getActivity(), "Some error occurred!", Toast.LENGTH_SHORT).show();
