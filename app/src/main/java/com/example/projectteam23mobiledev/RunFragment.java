@@ -81,7 +81,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     TextView distance;
     TextView time;
     TextView pace;
-    boolean isRunning = false;
+    boolean isRunning = true;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 101;
@@ -126,6 +126,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         calories = (TextView) runView.findViewById(R.id.calories_value);
         sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
         countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_NORMAL);
         //sensorManager = (SensorManager) this.getActivity().getSystemService(Activity.SENSOR_SERVICE);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         tStart = System.currentTimeMillis();
