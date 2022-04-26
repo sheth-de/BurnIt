@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Models.RunModel;
-import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

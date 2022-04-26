@@ -11,13 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.example.projectteam23mobiledev.Models.Challenge;
-import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.example.projectteam23mobiledev.ChallengeFragment;
+import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Models.ChallengeCardModel;
 import com.example.projectteam23mobiledev.R;
 import com.example.projectteam23mobiledev.RunFragment;
 import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,12 +27,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 
 public class ChallengeCardAdapter extends PagerAdapter {
     private final ChallengeFragment context;

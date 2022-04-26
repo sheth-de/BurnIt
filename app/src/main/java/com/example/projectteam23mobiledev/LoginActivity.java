@@ -1,13 +1,9 @@
 package com.example.projectteam23mobiledev;
 
 import static android.content.ContentValues.TAG;
-
 import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_EMAIL;
 import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_UID;
 import static com.example.projectteam23mobiledev.Utilities.Constants.KEY_WALLET;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

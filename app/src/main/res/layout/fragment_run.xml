@@ -6,7 +6,6 @@
     android:id="@+id/run_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cardview_dark_background"
     tools:context=".RunFragment">
 
 
@@ -38,7 +37,6 @@
                     android:layout_height="48dp"
                     android:layout_above="@+id/distance_text"
                     android:inputType="number"
-                    android:textColor="@color/white"
                     android:textSize="25dp"
                     android:textStyle="bold"
                     android:layout_alignParentRight="true"
@@ -50,7 +48,6 @@
                     android:layout_width="80dp"
                     android:layout_height="48dp"
                     android:text="Distance"
-                    android:textColor="@color/white"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -71,7 +68,6 @@
                     android:layout_alignParentRight="true"
                     android:gravity="bottom"
                     android:inputType="number"
-                    android:textColor="@color/white"
                     android:textSize="25dp"
                     android:textStyle="bold"
                     tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
@@ -82,7 +78,6 @@
                     android:layout_height="48dp"
                     android:layout_below="@id/distance_text"
                     android:text="Steps"
-                    android:textColor="@color/white"
                     android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
@@ -107,7 +102,6 @@
                     android:layout_alignParentRight="true"
                     android:gravity="bottom"
                     android:inputType="number"
-                    android:textColor="@color/white"
                     android:textSize="25dp"
                     android:textStyle="bold"
                     tools:ignore="SpeakableTextPresentCheck"
@@ -120,7 +114,6 @@
                     android:layout_height="48dp"
                     android:layout_toLeftOf="@id/time_value"
                     android:text="Time"
-                    android:textColor="@color/white"
                     android:textSize="15sp" />
 
 
@@ -143,7 +136,6 @@
                     android:layout_alignParentRight="true"
                     android:gravity="bottom"
                     android:inputType="numberDecimal"
-                    android:textColor="@color/white"
                     android:textSize="25dp"
                     android:textStyle="bold"
                     tools:ignore="SpeakableTextPresentCheck" />
@@ -155,7 +147,6 @@
                     android:layout_below="@id/time_text"
                     android:layout_toLeftOf="@id/pace_value"
                     android:text="Pace"
-                    android:textColor="@color/white"
                     android:textSize="15sp" />
 
 
@@ -188,7 +179,6 @@
                     android:layout_height="48dp"
                     android:layout_above="@+id/calories_text"
                     android:inputType="number"
-                    android:textColor="@color/white"
                     android:textSize="25dp"
                     android:textStyle="bold"
                     android:layout_alignParentRight="true"
@@ -200,7 +190,6 @@
                     android:layout_width="80dp"
                     android:layout_height="48dp"
                     android:text="Calories"
-                    android:textColor="@color/white"
                     android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
