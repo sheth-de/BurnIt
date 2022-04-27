@@ -6,54 +6,69 @@
     tools:context=".ChallengeFragment">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/fragmentBtnCreateChallenge"
+                <Button
+                    android:id="@+id/fragmentBtnCreateChallenge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create Challenge"
+                    android:layout_margin="20dp"
+                    android:layout_gravity="center"/>
+
+
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create Challenge"
-                android:layout_margin="20dp"
-                android:layout_gravity="center"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
-                android:text="Open challenges"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Open challenges"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:id="@+id/txt_open_chl"/>
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/vp_open_ch"
-                android:layout_width="wrap_content"
-                android:layout_height="200dp"
-                android:clipToPadding="false"
-                android:foregroundGravity="center"
-                android:overScrollMode="never" />
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vp_open_ch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:clipToPadding="false"
+                    android:foregroundGravity="center"
+                    android:overScrollMode="never" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
-                android:text="Ongoing challenges"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Ongoing challenges"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:id="@+id/txt_ongoing_chl"
+                    />
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/vp_ongoing_ch"
-                android:layout_width="wrap_content"
-                android:layout_height="200dp"
-                android:clipToPadding="false"
-                android:foregroundGravity="center"
-                android:overScrollMode="never" />
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vp_ongoing_ch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:clipToPadding="false"
+                    android:foregroundGravity="center"
+                    android:overScrollMode="never" />
+            </LinearLayout>
+
+
+
+
         </LinearLayout>
 </ScrollView>

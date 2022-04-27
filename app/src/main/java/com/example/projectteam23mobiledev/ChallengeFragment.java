@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -30,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +47,7 @@ public class ChallengeFragment extends Fragment {
     private ChallengeCardAdapter challengeCardAdapter;
     private ChallengeCardAdapter onGoingChallengeCardAdapter;
     private Button fragmentBtnCreateChallenge;
+    private TextView txt_open, txt_ongoing;
 
     FirebaseAuth mAuth;
     private BottomNavViewModel bottomNavViewModel;
@@ -73,9 +77,18 @@ public class ChallengeFragment extends Fragment {
 
 
         openChViewPager = view.findViewById(R.id.vp_open_ch);
+        txt_open = view.findViewById(R.id.txt_open_chl);
+        openChViewPager.setVisibility(View.GONE);
+        txt_open.setVisibility(View.GONE);
+        modelArrayList = new ArrayList<>();
+
+        ongoingChViewPager = view.findViewById(R.id.vp_ongoing_ch);
+        txt_ongoing = view.findViewById(R.id.txt_ongoing_chl);
+        ongoingChViewPager.setVisibility(View.GONE);
+        txt_ongoing.setVisibility(View.GONE);
+        ongoingModelArrayList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         db.collection("challenges")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -211,10 +224,25 @@ public class ChallengeFragment extends Fragment {
                         openChViewPager.setAdapter(challengeCardAdapter);
 
                         openChViewPager.setPadding(50, 0, 50, 0);
+
+                        if (modelArrayList.size() > 0) {
+                            txt_open.setVisibility(View.VISIBLE);
+                            openChViewPager.setVisibility(View.VISIBLE);
+                        } else {
+                            txt_open.setVisibility(View.GONE);
+                            openChViewPager.setVisibility(View.GONE);
+                        }
+
+                        if (ongoingModelArrayList.size() > 0) {
+                            txt_ongoing.setVisibility(View.VISIBLE);
+                            ongoingChViewPager.setVisibility(View.VISIBLE);
+                        } else {
+                            txt_ongoing.setVisibility(View.GONE);
+                            ongoingChViewPager.setVisibility(View.GONE);
+                        }
                     }
                 });
 
-        loadOpenCards();
         openChViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -233,8 +261,7 @@ public class ChallengeFragment extends Fragment {
         });
 
 
-        ongoingChViewPager = view.findViewById(R.id.vp_ongoing_ch);
-        loadOngoingCards();
+
 
         return view;
     }
