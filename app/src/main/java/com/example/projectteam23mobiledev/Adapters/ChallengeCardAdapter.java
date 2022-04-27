@@ -261,7 +261,7 @@ public class ChallengeCardAdapter extends PagerAdapter {
                             .document(challengeCardModel.getChallengeId())
                             .update(map);
 
-                    RunFragment fragment = new RunFragment();
+                    RunFragment fragment = new RunFragment(bottomNavViewModel);
                     Bundle bundle = new Bundle();
                     bundle.putString("challengeId", challengeCardModel.getChallengeId());
                     bundle.putSerializable("challenge", challengeCardModel.getChallenge());

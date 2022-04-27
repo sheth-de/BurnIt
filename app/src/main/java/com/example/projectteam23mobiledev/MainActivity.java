@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView usr;
 //    private TextView usr;
     private BottomNavigationView bottomNavigationView;
-    private StartRunActivity StartRunFragment = new StartRunActivity();
+    private StartRunActivity StartRunFragment;
     private ProfileFragment profileFragment = new ProfileFragment();
     private ChallengeFragment challengeFragment;
 
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         challengeFragment = new ChallengeFragment(bottomNavViewModel);
+        StartRunFragment = new StartRunActivity(bottomNavViewModel);
 
         mAuth = FirebaseAuth.getInstance();
 //        usr = (TextView) findViewById(R.id.usrname_edTxt);
