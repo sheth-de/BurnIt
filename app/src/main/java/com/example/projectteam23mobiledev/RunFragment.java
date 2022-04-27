@@ -209,8 +209,8 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                                                         String usrId = document.getId();
                                                         Long bal = (long) document.getData().get("wallet");
-                                                        int tenSteps = (int) Math.floor(run.getSteps() / 50);
-                                                        bal += Long.valueOf(100 * tenSteps);
+                                                        int tenSteps = (int) Math.floor(run.getSteps() / 10);
+                                                        bal += Long.valueOf(5 * tenSteps);
 
                                                         db.collection("users")
                                                                 .document(usrId)
