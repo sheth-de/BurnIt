@@ -1,5 +1,7 @@
 package com.example.projectteam23mobiledev.Adapters;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ public class ChallengeCardAdapter extends PagerAdapter {
     private ArrayList<ChallengeCardModel> modelArrayList;
     private boolean isOpen;
     private BottomNavViewModel bottomNavViewModel;
+    private ChallengeCardModel model;
 
     public ChallengeCardAdapter(ChallengeFragment context, ArrayList<ChallengeCardModel> modelArrayList, boolean isOpen, BottomNavViewModel bottomNavViewModel) {
         this.context = context;
@@ -80,6 +83,7 @@ public class ChallengeCardAdapter extends PagerAdapter {
 
         //get data
         ChallengeCardModel challengeCardModel = modelArrayList.get(position);
+        model = challengeCardModel;
         final String title = challengeCardModel.getTitle();
         final String details = challengeCardModel.getDetails();
         final String createdBy = challengeCardModel.getCreated_by();
@@ -149,6 +153,18 @@ public class ChallengeCardAdapter extends PagerAdapter {
 
 
 
+                                            } else {
+
+                                                AlertDialog alertDialog = new AlertDialog.Builder(context.getActivity()).create();
+                                                alertDialog.setTitle("Warning");
+                                                alertDialog.setMessage("Sorry, Insufficient Balance. Gain more points with those runs and challenges.");
+                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                        new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
+                                                alertDialog.show();
                                             }
                                         }
                                     }
@@ -261,58 +277,38 @@ public class ChallengeCardAdapter extends PagerAdapter {
             btn_withdraw.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
                     Challenge c = challengeCardModel.getChallenge();
 
+                    String title = "Warning";
+                    String text = String.format("If you withdraw now, you will lose your " +
+                            "waged points of %d xp in this %s based challenge.", c.getMinPoints(), c.getType());
 
-                    // implment points allocations here after withdraw action
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context.getActivity());
 
-                    // the other user gets all the points
-                    String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    LayoutInflater inflater = context.getActivity().getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.withdrawal_dialog_box, null);
 
-                    String oppEmail = currEmail.equals(c.getSender())? c.getReceiver(): c.getSender();
-                    db.collection("users")
-                            .whereEqualTo("email", oppEmail)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    builder.setView(dialogView)
+                            .setTitle(title)
+                            .setNegativeButton("withdraw", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            Long wallBal = (Long) document.getData().get("wallet");
-                                            Challenge c = challengeCardModel.getChallenge();
-                                            int totalCredit = c.getTotalCredit();
+                                public void onClick(DialogInterface dialog, int which) {
 
-                                            wallBal += totalCredit;
-                                            c.setTotalCredit(0);
+                                    withdrawFromChallenge();
 
-                                            // add points to wallet
-                                            db.collection("users").document(document.getId())
-                                                    .update(
-                                                            "wallet", wallBal
-                                                    ).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
+                                }
+                            })
+                            .setPositiveButton("cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                                                    c.setStatus("closed");
-                                                    ObjectMapper oMapper = new ObjectMapper();
-                                                    // object -> Map
-                                                    Map<String, Object> map = oMapper.convertValue(c, Map.class);
-                                                    //Log.e("doc id",challengeCardModel.getChallengeId() );
-                                                    db.collection("challenges").document(challengeCardModel.getChallengeId())
-                                                            .update(map);
-
-                                                }
-                                            });
-
-                                        }
-                                    }
                                 }
                             });
 
+                    TextView txt_msg = dialogView.findViewById(R.id.txt_msg);
+                    txt_msg.setText(text);
 
-
+                    builder.show();
 
                 }
             });
@@ -329,5 +325,56 @@ public class ChallengeCardAdapter extends PagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
+    }
+
+    public void withdrawFromChallenge() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Challenge c = model.getChallenge();
+
+        // implment points allocations here after withdraw action
+
+        // the other user gets all the points
+        String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+        String oppEmail = currEmail.equals(c.getSender())? c.getReceiver(): c.getSender();
+        db.collection("users")
+                .whereEqualTo("email", oppEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Long wallBal = (Long) document.getData().get("wallet");
+                                int totalCredit = c.getTotalCredit();
+
+                                wallBal += totalCredit;
+                                c.setTotalCredit(0);
+
+                                // add points to wallet
+                                db.collection("users").document(document.getId())
+                                        .update(
+                                                "wallet", wallBal
+                                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+
+                                        c.setStatus("closed");
+                                        ObjectMapper oMapper = new ObjectMapper();
+                                        // object -> Map
+                                        Map<String, Object> map = oMapper.convertValue(c, Map.class);
+                                        //Log.e("doc id",challengeCardModel.getChallengeId() );
+                                        db.collection("challenges").document(model.getChallengeId())
+                                                .update(map);
+
+                                    }
+                                });
+
+                            }
+                        }
+                    }
+                });
     }
 }
