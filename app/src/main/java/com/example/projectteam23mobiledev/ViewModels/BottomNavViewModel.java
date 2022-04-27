@@ -14,4 +14,14 @@ public class BottomNavViewModel extends ViewModel {
     public MutableLiveData<Integer> getSelected() {
         return selected;
     }
+
+    private final MutableLiveData<Boolean> isVisible = new MutableLiveData<Boolean>();
+
+    public void setIsVisible(Boolean id) {
+        isVisible.setValue(id);
+    }
+
+    public MutableLiveData<Boolean> getIsVisible() {
+        return isVisible;
+    }
 }

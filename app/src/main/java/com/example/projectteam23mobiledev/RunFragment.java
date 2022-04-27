@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -97,6 +98,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     FirebaseAuth mAuth;
     Handler hd;
     BottomNavViewModel bottomNavViewModel;
+    private BottomNavigationView bottomNavigationView;
 
     public RunFragment(BottomNavViewModel bottomNavViewModel) {
         this.bottomNavViewModel = bottomNavViewModel;
@@ -120,6 +122,8 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             challengeId = "0";
             challenge = null;
         }
+
+        bottomNavViewModel.setIsVisible(true);
 
 
         hd = new Handler();

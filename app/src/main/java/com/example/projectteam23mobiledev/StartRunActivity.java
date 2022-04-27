@@ -26,6 +26,7 @@ public class StartRunActivity extends Fragment implements View.OnClickListener {
         View startRunView = inflater.inflate(R.layout.fragment_start_run, container, false);
         Button btnStartRun = (Button) startRunView.findViewById(R.id.btn_start_run);
         btnStartRun.setOnClickListener(this);
+        bottomNavViewModel.setIsVisible(false);
         return startRunView;
     }
 
@@ -34,6 +35,7 @@ public class StartRunActivity extends Fragment implements View.OnClickListener {
         Fragment fragment = new RunFragment(bottomNavViewModel);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        bottomNavViewModel.setIsVisible(false);
         fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

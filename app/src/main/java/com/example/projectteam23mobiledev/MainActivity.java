@@ -3,6 +3,7 @@ package com.example.projectteam23mobiledev;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 default:
                     break;
+            }
+        });
+
+        bottomNavViewModel.getIsVisible().observe(this, id -> {
+            if (id) {
+                bottomNavigationView.setVisibility(View.GONE);
+            } else {
+                bottomNavigationView.setVisibility(View.VISIBLE);
             }
         });
 
