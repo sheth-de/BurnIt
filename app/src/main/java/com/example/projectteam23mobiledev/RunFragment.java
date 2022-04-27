@@ -96,6 +96,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     Button pause;
     FirebaseAuth mAuth;
     Handler hd;
+    Challenge challenge;
 
     BottomNavViewModel bottomNavViewModel;
 
@@ -110,7 +111,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
         Bundle bundle = this.getArguments();
         final String challengeId;
-        Challenge challenge;
         if (bundle != null) {
             challengeId  = bundle.getString("challengeId", null);
             challenge  = (Challenge) bundle.getSerializable("challenge");
@@ -495,6 +495,19 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             long tDelta = tEnd - tStart;
             elapsedSeconds = (tDelta / 1000);
             elapsedHours = (elapsedSeconds/(60.0 * 60.0));
+
+            //stop run after challenge
+            if (challenge != null) {
+                if ("time".equals(challenge.getType())) {
+                    if (challenge.getTime() == tDelta) {
+                        this.onStop();
+                    }
+                } else if ("distance".equals(challenge.getType())) {
+                    if (challenge.getDistance() == distanceValue) {
+                        this.onStop();
+                    }
+                }
+            }
 
             //calculate pace
             speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
