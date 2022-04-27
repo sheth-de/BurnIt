@@ -196,21 +196,52 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                     db.collection("runstats")
                             .add(run)
                             .addOnSuccessListener(documentReference -> {
-//
 
-                                run.setId(documentReference.getId());
+                                db.collection("users")
+                                        .whereEqualTo("email", currEmail)
+                                        .limit(1)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                Fragment fragment = new RunStatsFragment();
+                                                        String usrId = document.getId();
+                                                        Long bal = (long) document.getData().get("wallet");
+                                                        int tenSteps = (int) Math.floor(run.getSteps() / 50);
+                                                        bal += Long.valueOf(100 * tenSteps);
 
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("runStats", run);
-                                fragment.setArguments(bundle);
+                                                        db.collection("users")
+                                                                .document(usrId)
+                                                                .update(
+                                                                        "wallet", bal
+                                                                )
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void unused) {
 
-                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.container, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
+                                                                        run.setId(documentReference.getId());
+
+                                                                        Fragment fragment = new RunStatsFragment();
+
+                                                                        Bundle bundle = new Bundle();
+                                                                        bundle.putSerializable("runStats", run);
+                                                                        fragment.setArguments(bundle);
+
+                                                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                        fragmentTransaction.replace(R.id.container, fragment);
+                                                                        fragmentTransaction.addToBackStack(null);
+                                                                        fragmentTransaction.commit();
+
+                                                                    }
+                                                                });
+
+                                                    }
+                                                }
+                                            }
+                                            });
 
                             })
                             .addOnFailureListener(exception -> {
