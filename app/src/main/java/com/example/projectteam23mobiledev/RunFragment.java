@@ -96,6 +96,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     Button pause;
     FirebaseAuth mAuth;
     Handler hd;
+
     BottomNavViewModel bottomNavViewModel;
 
     public RunFragment(BottomNavViewModel bottomNavViewModel) {
@@ -202,52 +203,21 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                     db.collection("runstats")
                             .add(run)
                             .addOnSuccessListener(documentReference -> {
+//
 
-                                db.collection("users")
-                                        .whereEqualTo("email", currEmail)
-                                        .limit(1)
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                run.setId(documentReference.getId());
 
-                                                        String usrId = document.getId();
-                                                        Long bal = (long) document.getData().get("wallet");
-                                                        int tenSteps = (int) Math.floor(run.getSteps() / 10);
-                                                        bal += Long.valueOf(5 * tenSteps);
+                                Fragment fragment = new RunStatsFragment(bottomNavViewModel);
 
-                                                        db.collection("users")
-                                                                .document(usrId)
-                                                                .update(
-                                                                        "wallet", bal
-                                                                )
-                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                    @Override
-                                                                    public void onSuccess(Void unused) {
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("runStats", run);
+                                fragment.setArguments(bundle);
 
-                                                                        run.setId(documentReference.getId());
-
-                                                                        Fragment fragment = new RunStatsFragment(bottomNavViewModel);
-
-                                                                        Bundle bundle = new Bundle();
-                                                                        bundle.putSerializable("runStats", run);
-                                                                        fragment.setArguments(bundle);
-
-                                                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                                        fragmentTransaction.replace(R.id.container, fragment);
-                                                                        fragmentTransaction.addToBackStack(null);
-                                                                        fragmentTransaction.commit();
-
-                                                                    }
-                                                                });
-
-                                                    }
-                                                }
-                                            }
-                                            });
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.container, fragment);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
 
                             })
                             .addOnFailureListener(exception -> {
@@ -558,7 +528,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLocation = location;
-//                    Toast.makeText(getContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(RunFragment.this);
