@@ -8,12 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Models.RunModel;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +28,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class RunStatsFragment extends Fragment {
+    private BottomNavViewModel bottomNavViewModel;
+    public RunStatsFragment(BottomNavViewModel bottomNavViewModel) {
+        this.bottomNavViewModel = bottomNavViewModel;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -168,11 +176,17 @@ public class RunStatsFragment extends Fragment {
                 });
 
 
-
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                bottomNavViewModel.select(1);
+            }
+        });
         return view;
     }
 
     private String getResult() {
         return "";
     }
+
 }

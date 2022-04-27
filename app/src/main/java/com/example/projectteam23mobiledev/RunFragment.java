@@ -35,6 +35,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Models.RunModel;
 import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -95,6 +96,11 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     Button pause;
     FirebaseAuth mAuth;
     Handler hd;
+    BottomNavViewModel bottomNavViewModel;
+
+    public RunFragment(BottomNavViewModel bottomNavViewModel) {
+        this.bottomNavViewModel = bottomNavViewModel;
+    }
 
     @Nullable
     @Override
@@ -223,7 +229,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                                                                         run.setId(documentReference.getId());
 
-                                                                        Fragment fragment = new RunStatsFragment();
+                                                                        Fragment fragment = new RunStatsFragment(bottomNavViewModel);
 
                                                                         Bundle bundle = new Bundle();
                                                                         bundle.putSerializable("runStats", run);
@@ -245,7 +251,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                             })
                             .addOnFailureListener(exception -> {
-                                Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
                             });
                 } else {
 
@@ -358,7 +364,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                                                                                                                         .addOnSuccessListener(documentReference -> {
                                                                                                                             run.setId(documentReference.getId());
 
-                                                                                                                            Fragment fragment = new RunStatsFragment();
+                                                                                                                            Fragment fragment = new RunStatsFragment(bottomNavViewModel);
 
                                                                                                                             Bundle bundle = new Bundle();
                                                                                                                             bundle.putSerializable("runStats", run);
@@ -372,7 +378,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                                                                                                                         })
                                                                                                                         .addOnFailureListener(exception -> {
-                                                                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+//                                                                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
                                                                                                                         });
 
                                                                                                             }
@@ -417,7 +423,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                                                                             run.setId(documentReference.getId());
 
-                                                                            Fragment fragment = new RunStatsFragment();
+                                                                            Fragment fragment = new RunStatsFragment(bottomNavViewModel);
 
                                                                             Bundle bundle = new Bundle();
                                                                             bundle.putSerializable("runStats", run);
@@ -431,7 +437,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                                                                         })
                                                                         .addOnFailureListener(exception -> {
-                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+//                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
                                                                         });
                                                             }
                                                         });
@@ -552,7 +558,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLocation = location;
-                    Toast.makeText(getContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(RunFragment.this);

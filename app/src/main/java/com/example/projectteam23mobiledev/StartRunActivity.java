@@ -10,7 +10,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
+
 public class StartRunActivity extends Fragment implements View.OnClickListener {
+
+    private BottomNavViewModel bottomNavViewModel;
+
+    public StartRunActivity(BottomNavViewModel bottomNavViewModel) {
+        this.bottomNavViewModel = bottomNavViewModel;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -23,7 +31,7 @@ public class StartRunActivity extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Fragment fragment = new RunFragment();
+        Fragment fragment = new RunFragment(bottomNavViewModel);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
