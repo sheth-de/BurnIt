@@ -3,57 +3,101 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ChallengeFragment">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/fragmentBtnCreateChallenge"
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="20dp"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:src="@drawable/comm_dp"
+                    android:scaleType="centerCrop"
+                    >
+                </ImageView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:layout_marginTop="10dp"
+                    android:text="Compete with our challengers!"/>
+            </androidx.cardview.widget.CardView>
+
+                <Button
+                    android:id="@+id/fragmentBtnCreateChallenge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create Challenge"
+                    android:layout_margin="20dp"
+                    android:layout_gravity="center"/>
+
+
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create Challenge"
-                android:layout_margin="20dp"
-                android:layout_gravity="center"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
-                android:text="Open challenges"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Open challenges"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:id="@+id/txt_open_chl"/>
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/vp_open_ch"
-                android:layout_width="wrap_content"
-                android:layout_height="200dp"
-                android:clipToPadding="false"
-                android:foregroundGravity="center"
-                android:overScrollMode="never" />
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vp_open_ch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:clipToPadding="false"
+                    android:foregroundGravity="center"
+                    android:overScrollMode="never" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
-                android:text="Ongoing challenges"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Ongoing challenges"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:id="@+id/txt_ongoing_chl"
+                    />
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/vp_ongoing_ch"
-                android:layout_width="wrap_content"
-                android:layout_height="200dp"
-                android:clipToPadding="false"
-                android:foregroundGravity="center"
-                android:overScrollMode="never" />
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vp_ongoing_ch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:clipToPadding="false"
+                    android:foregroundGravity="center"
+                    android:overScrollMode="never" />
+            </LinearLayout>
+
+
+
+
         </LinearLayout>
 </ScrollView>
