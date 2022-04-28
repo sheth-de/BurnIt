@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,8 +26,10 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -97,6 +101,10 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     Button pause;
     FirebaseAuth mAuth;
     Handler hd;
+    Challenge challenge;
+    String currEmail;
+    String challengeId;
+
     BottomNavViewModel bottomNavViewModel;
     private BottomNavigationView bottomNavigationView;
 
@@ -110,8 +118,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         View runView = inflater.inflate(R.layout.fragment_run, container, false);
 
         Bundle bundle = this.getArguments();
-        final String challengeId;
-        Challenge challenge;
         if (bundle != null) {
             challengeId  = bundle.getString("challengeId", null);
             challenge  = (Challenge) bundle.getSerializable("challenge");
@@ -126,9 +132,38 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         bottomNavViewModel.setIsVisible(true);
 
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setTitle("Quit");
+                alert.setMessage("Are you sure you want to stop the run?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onStop();
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+            }
+
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
         hd = new Handler();
         mAuth = FirebaseAuth.getInstance();
-        String currEmail  = mAuth.getCurrentUser().getEmail();
+        currEmail  = mAuth.getCurrentUser().getEmail();
         steps = (TextView) runView.findViewById(R.id.steps_value);
         distance = (TextView) runView.findViewById(R.id.distance_value);
         time = (TextView) runView.findViewById(R.id.time_value);
@@ -161,289 +196,11 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                Date d = new Date();
-                d.getTime();
-
-
-
-                RunModel run = new RunModel(currEmail, distanceValue,
-                        stepCount, speed, elapsedSeconds, challengeId ,caloriesValue);
-
-                // get run model of the other user
-                final RunModel[] opp_run = new RunModel[1];
-
-                Query q = db.collection("runstats")
-                        .whereEqualTo("challengeId", challengeId);
-//                        .whereNotEqualTo("user", currEmail);
-
-
-                if(challengeId == "0") {
-                    // if no challenge and just a normal
-                    db.collection("runstats")
-                            .add(run)
-                            .addOnSuccessListener(documentReference -> {
-
-                                db.collection("users")
-                                        .whereEqualTo("email", currEmail)
-                                        .limit(1)
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                                        String usrId = document.getId();
-                                                        Long bal = (long) document.getData().get("wallet");
-                                                        int tenSteps = (int) Math.floor(run.getSteps() / 10);
-                                                        bal += Long.valueOf(5 * tenSteps);
-
-                                                        db.collection("users")
-                                                                .document(usrId)
-                                                                .update(
-                                                                        "wallet", bal
-                                                                )
-                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                    @Override
-                                                                    public void onSuccess(Void unused) {
-
-                                                                        run.setId(documentReference.getId());
-
-                                                                        Fragment fragment = new RunStatsFragment(bottomNavViewModel);
-
-                                                                        Bundle bundle = new Bundle();
-                                                                        bundle.putSerializable("runStats", run);
-                                                                        fragment.setArguments(bundle);
-
-                                                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                                        fragmentTransaction.replace(R.id.container, fragment);
-                                                                        fragmentTransaction.addToBackStack(null);
-                                                                        fragmentTransaction.commit();
-
-                                                                    }
-                                                                });
-
-                                                    }
-                                                }
-                                            }
-                                            });
-
-                            })
-                            .addOnFailureListener(exception -> {
-//                                Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
-                } else {
-
-                    // there is a challenge
-                    db.collection("runstats")
-                            .whereEqualTo("challengeId", challengeId)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    boolean isEmptyDoc = true;
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            String usr = (String) document.getData().get("user");
-                                            isEmptyDoc = false;
-
-                                            if (!usr.equals(currEmail)) {
-                                                // the other user exists
-                                                opp_run[0] = (RunModel) document.toObject(RunModel.class);
-
-                                                if (opp_run[0] != null && challenge != null) {
-
-                                                    // compare run models
-                                                    boolean res = false;
-                                                    if (challenge.getType().equals("distance")) {
-
-                                                        if (opp_run[0].getSeconds() > run.getSeconds()) {
-                                                            res = true;
-                                                        }
-                                                    } else {
-                                                        if (opp_run[0].getDistance() < run.getDistance()) {
-                                                            res = true;
-                                                        }
-                                                    }
-
-                                                    String vicEmail = currEmail;
-
-                                                    // add result in challenge
-                                                    if (res) {
-                                                        // he won
-                                                        if (challenge.getSender().equals(currEmail)) {
-                                                            challenge.setStatus("snd");
-                                                            challenge.setSendStatus(StatusEnum.COMPLETED);
-                                                        } else {
-                                                            challenge.setStatus("rcv");
-                                                            challenge.setReceiverStatus(StatusEnum.COMPLETED);
-                                                        }
-
-                                                    } else {
-                                                        // he lost
-                                                        if (challenge.getSender().equals(currEmail)) {
-                                                            challenge.setStatus("rcv");
-                                                            vicEmail = challenge.getReceiver();
-                                                            challenge.setSendStatus(StatusEnum.COMPLETED);
-
-                                                        } else {
-
-                                                            challenge.setStatus("snd");
-                                                            vicEmail = challenge.getSender();
-                                                            challenge.setReceiverStatus(StatusEnum.COMPLETED);
-                                                        }
-                                                    }
-
-                                                    int vicPoints = challenge.getTotalCredit();
-                                                    challenge.setTotalCredit(0);
-
-                                                    // add money to victor in wallet
-                                                    final String[] usrDocId = {""};
-                                                    final long[] bal = new long[1];
-                                                    db.collection("users")
-                                                            .whereEqualTo("email", vicEmail)
-                                                            .limit(1)
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                            usrDocId[0] = document.getId();
-                                                                            bal[0] = (long) document.getData().get("wallet");
-
-                                                                            if (usrDocId[0].equals("")) {
-                                                                                // didn;t get the user return
-                                                                                return;
-                                                                            } else {
-                                                                                Long newBal = bal[0] + vicPoints;
-
-                                                                                //add money to user db wallet
-                                                                                db.collection("users")
-                                                                                        .document(usrDocId[0])
-                                                                                        .update(
-                                                                                                "wallet", newBal
-                                                                                        )
-                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                            @Override
-                                                                                            public void onSuccess(Void unused) {
-
-                                                                                                // now update the challenge
-                                                                                                ObjectMapper oMapper = new ObjectMapper();
-                                                                                                Map<String, Object> map = oMapper.convertValue(challenge, Map.class);
-                                                                                                db.collection("challenges")
-                                                                                                        .document(challengeId)
-                                                                                                        .update(map)
-                                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                            @Override
-                                                                                                            public void onSuccess(Void unused) {
-
-                                                                                                                db.collection("runstats")
-                                                                                                                        .add(run)
-                                                                                                                        .addOnSuccessListener(documentReference -> {
-                                                                                                                            run.setId(documentReference.getId());
-
-                                                                                                                            Fragment fragment = new RunStatsFragment(bottomNavViewModel);
-
-                                                                                                                            Bundle bundle = new Bundle();
-                                                                                                                            bundle.putSerializable("runStats", run);
-                                                                                                                            fragment.setArguments(bundle);
-
-                                                                                                                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                                                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                                                                                            fragmentTransaction.replace(R.id.container, fragment);
-                                                                                                                            fragmentTransaction.addToBackStack(null);
-                                                                                                                            fragmentTransaction.commit();
-
-                                                                                                                        })
-                                                                                                                        .addOnFailureListener(exception -> {
-//                                                                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                                                                        });
-
-                                                                                                            }
-                                                                                                        });
-                                                                                            }
-                                                                                        });
-                                                                            }
-                                                                            break;
-                                                                        }
-                                                                    } else {
-                                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                                                    }
-                                                                }
-                                                            });
-
-
-                                                }
-                                            }
-                                        }
-
-                                        if (isEmptyDoc) {
-                                            // if no opposite runner but its a challenge
-                                            if (opp_run[0] == null && challenge!=null) {
-                                                if (currEmail.equals(challenge.getSender())) {
-                                                    challenge.setSendStatus(StatusEnum.COMPLETED);
-                                                } else {
-                                                    challenge.setReceiverStatus(StatusEnum.COMPLETED);
-                                                }
-
-                                                ObjectMapper oMapper = new ObjectMapper();
-                                                // object -> Map
-                                                Map<String, Object> map = oMapper.convertValue(challenge, Map.class);
-                                                db.collection("challenges")
-                                                        .document(challengeId)
-                                                        .update(map)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-                                                                db.collection("runstats")
-                                                                        .add(run)
-                                                                        .addOnSuccessListener(documentReference -> {
-
-                                                                            run.setId(documentReference.getId());
-
-                                                                            Fragment fragment = new RunStatsFragment(bottomNavViewModel);
-
-                                                                            Bundle bundle = new Bundle();
-                                                                            bundle.putSerializable("runStats", run);
-                                                                            fragment.setArguments(bundle);
-
-                                                                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                                            fragmentTransaction.replace(R.id.container, fragment);
-                                                                            fragmentTransaction.addToBackStack(null);
-                                                                            fragmentTransaction.commit();
-
-                                                                        })
-                                                                        .addOnFailureListener(exception -> {
-//                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                        });
-                                                            }
-                                                        });
-                                            }
-                                        }
-                                    } else {
-                                        Log.d(TAG, "empty runner : "+opp_run[0]);
-
-
-
-
-
-                                    }
-                                }
-                            });
-                }
-
-
-
                 onStop();
-
             }
         });
         return runView;
+
     }
 
     public void stuff() {
@@ -473,6 +230,252 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
     @Override
     public void onStop() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Date d = new Date();
+        d.getTime();
+
+
+
+        RunModel run = new RunModel(currEmail, distanceValue,
+                stepCount, speed, elapsedSeconds, challengeId ,caloriesValue);
+
+        // get run model of the other user
+        final RunModel[] opp_run = new RunModel[1];
+
+        Query q = db.collection("runstats")
+                .whereEqualTo("challengeId", challengeId);
+//                        .whereNotEqualTo("user", currEmail);
+
+
+        if(challengeId == "0") {
+            // if no challenge and just a normal
+            db.collection("runstats")
+                    .add(run)
+                    .addOnSuccessListener(documentReference -> {
+//
+
+                        run.setId(documentReference.getId());
+
+                        Fragment fragment = new RunStatsFragment(bottomNavViewModel);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("runStats", run);
+                        fragment.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.container, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+
+                    })
+                    .addOnFailureListener(exception -> {
+//                                Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+
+            // there is a challenge
+            db.collection("runstats")
+                    .whereEqualTo("challengeId", challengeId)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            boolean isEmptyDoc = true;
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String usr = (String) document.getData().get("user");
+                                    isEmptyDoc = false;
+
+                                    if (!usr.equals(currEmail)) {
+                                        // the other user exists
+                                        opp_run[0] = (RunModel) document.toObject(RunModel.class);
+
+                                        if (opp_run[0] != null && challenge != null) {
+
+                                            // compare run models
+                                            boolean res = false;
+                                            if (challenge.getType().equals("distance")) {
+
+                                                if (opp_run[0].getSeconds() > run.getSeconds()) {
+                                                    res = true;
+                                                }
+                                            } else {
+                                                if (opp_run[0].getDistance() < run.getDistance()) {
+                                                    res = true;
+                                                }
+                                            }
+
+                                            String vicEmail = currEmail;
+
+                                            // add result in challenge
+                                            if (res) {
+                                                // he won
+                                                if (challenge.getSender().equals(currEmail)) {
+                                                    challenge.setStatus("snd");
+                                                    challenge.setSendStatus(StatusEnum.COMPLETED);
+                                                } else {
+                                                    challenge.setStatus("rcv");
+                                                    challenge.setReceiverStatus(StatusEnum.COMPLETED);
+                                                }
+
+                                            } else {
+                                                // he lost
+                                                if (challenge.getSender().equals(currEmail)) {
+                                                    challenge.setStatus("rcv");
+                                                    vicEmail = challenge.getReceiver();
+                                                    challenge.setSendStatus(StatusEnum.COMPLETED);
+
+                                                } else {
+
+                                                    challenge.setStatus("snd");
+                                                    vicEmail = challenge.getSender();
+                                                    challenge.setReceiverStatus(StatusEnum.COMPLETED);
+                                                }
+                                            }
+
+                                            int vicPoints = challenge.getTotalCredit();
+                                            challenge.setTotalCredit(0);
+
+                                            // add money to victor in wallet
+                                            final String[] usrDocId = {""};
+                                            final long[] bal = new long[1];
+                                            db.collection("users")
+                                                    .whereEqualTo("email", vicEmail)
+                                                    .limit(1)
+                                                    .get()
+                                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                    usrDocId[0] = document.getId();
+                                                                    bal[0] = (long) document.getData().get("wallet");
+
+                                                                    if (usrDocId[0].equals("")) {
+                                                                        // didn;t get the user return
+                                                                        return;
+                                                                    } else {
+                                                                        Long newBal = bal[0] + vicPoints;
+
+                                                                        //add money to user db wallet
+                                                                        db.collection("users")
+                                                                                .document(usrDocId[0])
+                                                                                .update(
+                                                                                        "wallet", newBal
+                                                                                )
+                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(Void unused) {
+
+                                                                                        // now update the challenge
+                                                                                        ObjectMapper oMapper = new ObjectMapper();
+                                                                                        Map<String, Object> map = oMapper.convertValue(challenge, Map.class);
+                                                                                        db.collection("challenges")
+                                                                                                .document(challengeId)
+                                                                                                .update(map)
+                                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                    @Override
+                                                                                                    public void onSuccess(Void unused) {
+
+                                                                                                        db.collection("runstats")
+                                                                                                                .add(run)
+                                                                                                                .addOnSuccessListener(documentReference -> {
+                                                                                                                    run.setId(documentReference.getId());
+
+                                                                                                                    Fragment fragment = new RunStatsFragment(bottomNavViewModel);
+
+                                                                                                                    Bundle bundle = new Bundle();
+                                                                                                                    bundle.putSerializable("runStats", run);
+                                                                                                                    fragment.setArguments(bundle);
+
+                                                                                                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                                                                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                                                                    fragmentTransaction.replace(R.id.container, fragment);
+                                                                                                                    fragmentTransaction.addToBackStack(null);
+                                                                                                                    fragmentTransaction.commit();
+
+                                                                                                                })
+                                                                                                                .addOnFailureListener(exception -> {
+//                                                                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                                                });
+
+                                                                                                    }
+                                                                                                });
+                                                                                    }
+                                                                                });
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            } else {
+                                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                                            }
+                                                        }
+                                                    });
+
+
+                                        }
+                                    }
+                                }
+
+                                if (isEmptyDoc) {
+                                    // if no opposite runner but its a challenge
+                                    if (opp_run[0] == null && challenge!=null) {
+                                        if (currEmail.equals(challenge.getSender())) {
+                                            challenge.setSendStatus(StatusEnum.COMPLETED);
+                                        } else {
+                                            challenge.setReceiverStatus(StatusEnum.COMPLETED);
+                                        }
+
+                                        ObjectMapper oMapper = new ObjectMapper();
+                                        // object -> Map
+                                        Map<String, Object> map = oMapper.convertValue(challenge, Map.class);
+                                        db.collection("challenges")
+                                                .document(challengeId)
+                                                .update(map)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        db.collection("runstats")
+                                                                .add(run)
+                                                                .addOnSuccessListener(documentReference -> {
+
+                                                                    run.setId(documentReference.getId());
+
+                                                                    Fragment fragment = new RunStatsFragment(bottomNavViewModel);
+
+                                                                    Bundle bundle = new Bundle();
+                                                                    bundle.putSerializable("runStats", run);
+                                                                    fragment.setArguments(bundle);
+
+                                                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                    fragmentTransaction.replace(R.id.container, fragment);
+                                                                    fragmentTransaction.addToBackStack(null);
+                                                                    fragmentTransaction.commit();
+
+                                                                })
+                                                                .addOnFailureListener(exception -> {
+//                                                                            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                });
+                                                    }
+                                                });
+                                    }
+                                }
+                            } else {
+                                Log.d(TAG, "empty runner : "+opp_run[0]);
+
+
+
+
+
+                            }
+                        }
+                    });
+        }
+
         isRunning = false;
         super.onStop();
         sensorManager.unregisterListener(this, countSensor);
@@ -508,6 +511,19 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             elapsedSeconds = (tDelta / 1000);
             elapsedHours = (elapsedSeconds/(60.0 * 60.0));
 
+            //stop run after challenge
+            if (challenge != null) {
+                if ("time".equals(challenge.getType())) {
+                    if (challenge.getTime() == tDelta) {
+                        this.onStop();
+                    }
+                } else if ("distance".equals(challenge.getType())) {
+                    if (challenge.getDistance() == distanceValue) {
+                        this.onStop();
+                    }
+                }
+            }
+
             //calculate pace
             speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
             String roundSpeed = String.format("%.2f", speed);
@@ -540,7 +556,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLocation = location;
-//                    Toast.makeText(getContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(RunFragment.this);
