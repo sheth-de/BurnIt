@@ -31,7 +31,9 @@ public class ProfileFragment extends Fragment {
     private TextView textProfileMiles;
     private TextView textProfileAverageSpeed;
     private TextView textProfileTotalChallenges;
+    private TextView userTotalPoints;
     private static final DecimalFormat df = new DecimalFormat("0.00");
+
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
@@ -45,6 +47,7 @@ public class ProfileFragment extends Fragment {
         textProfileMiles = v.findViewById(R.id.textProfileMiles);
         textProfileAverageSpeed = v.findViewById(R.id.textProfileAverageSpeed);
         textProfileTotalChallenges = v.findViewById(R.id.textProfileTotalChallenges);
+        userTotalPoints = v.findViewById(R.id.userTotalPoints);
 
         final Double[] totalDistance = {0.0};
         final Double[] count = {0.0};
@@ -53,6 +56,21 @@ public class ProfileFragment extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String email = user.getEmail();
         userEmail.setText(email.toString());
+        db.collection("users").whereEqualTo("email",email)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            if (task.isSuccessful()) {
+                                userTotalPoints.setText(document.getData().get("wallet").toString());
+                            }
+                            else{
+                                userTotalPoints.setText(0);
+                            }
+                        }
+                    }
+                });
         db.collection("runstats").whereEqualTo("user", email)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
