@@ -231,6 +231,8 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
     @Override
     public void onStop() {
 
+        super.onStop();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Date d = new Date();
@@ -247,6 +249,28 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         Query q = db.collection("runstats")
                 .whereEqualTo("challengeId", challengeId);
 //                        .whereNotEqualTo("user", currEmail);
+
+//                q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+////                                        opp_run[0] = (RunModel) document.toObject(RunModel.class);
+//
+//                                Log.d(TAG," user: "+(String) document.getData().get("user"));
+//
+//                                String usr = (String) document.getData().get("user");
+//
+//                                if (!usr.equals(currEmail)) {
+//                                    // the other user exists
+//                                }
+//                            }
+//                            Log.d(TAG," Bingo");
+//                        } else {
+//                            Log.d(TAG, "the query doesn't work");
+//                        }
+//                    }
+//                });
 
 
         if(challengeId == "0") {
@@ -383,6 +407,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                                                                                                         db.collection("runstats")
                                                                                                                 .add(run)
                                                                                                                 .addOnSuccessListener(documentReference -> {
+                                                                                                                    Log.d(TAG, "run here in 410: " + run.toString());
                                                                                                                     run.setId(documentReference.getId());
 
                                                                                                                     Fragment fragment = new RunStatsFragment(bottomNavViewModel);
@@ -442,6 +467,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                                                                 .add(run)
                                                                 .addOnSuccessListener(documentReference -> {
 
+                                                                    Log.d(TAG, "run here in 470: distance is " + run.getDistance() + ", time is " + run.getSeconds() + ", calories is " + run.getCalories() + ", speed is " + run.getSpeed() + ", steps is " + run.getSteps());
                                                                     run.setId(documentReference.getId());
 
                                                                     Fragment fragment = new RunStatsFragment(bottomNavViewModel);
@@ -477,7 +503,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
         }
 
         isRunning = false;
-        super.onStop();
         sensorManager.unregisterListener(this, countSensor);
     }
 
@@ -502,6 +527,14 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             String roundOffDistance = String.format("%.2f", distanceValue);
             distance.setText(String.valueOf(roundOffDistance));
 
+            if (challenge != null) {
+                if ("distance".equals(challenge.getType())) {
+                    if (Double.valueOf(roundOffDistance).equals(challenge.getDistance())) {
+                        onStop();
+                    }
+                }
+            }
+
             //calculate steps
             steps.setText(String.valueOf(stepCount));
 
@@ -510,19 +543,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
             long tDelta = tEnd - tStart;
             elapsedSeconds = (tDelta / 1000);
             elapsedHours = (elapsedSeconds/(60.0 * 60.0));
-
-            //stop run after challenge
-            if (challenge != null) {
-                if ("time".equals(challenge.getType())) {
-                    if (challenge.getTime() == tDelta) {
-                        this.onStop();
-                    }
-                } else if ("distance".equals(challenge.getType())) {
-                    if (challenge.getDistance() == distanceValue) {
-                        this.onStop();
-                    }
-                }
-            }
 
             //calculate pace
             speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
@@ -690,6 +710,14 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                     if (isRunning)
                     {
                         sec++;
+                        //stop run after challenge
+                        if (challenge != null) {
+                            if ("time".equals(challenge.getType())) {
+                                if (challenge.getTime() * 60 == sec) {
+                                    onStop();
+                                }
+                            }
+                        }
                     }
 
                     hd.postDelayed(this, 1000);

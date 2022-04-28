@@ -107,7 +107,7 @@ public class RunStatsFragment extends Fragment {
                             line1 = String.format("You VS %s\n", rcvId.substring(0, rcvId.indexOf('@')));
 
                             if (challenge.getStatus().equals("ongoing")) {
-                                line2 = String.format("%s is yet to complete the challenge.\n We'll notify who wins",
+                                line2 = String.format("%s is yet to complete the challenge.\nKeep an eye out for more updates!",
                                         rcvId.substring(0, rcvId.indexOf('@')));
                             } else {
                                 if(challenge.getStatus().equals("rcv")) {
@@ -123,7 +123,7 @@ public class RunStatsFragment extends Fragment {
                             line1 = String.format("You VS %s\n", sndId.substring(0, sndId.indexOf('@')));
 
                             if (challenge.getStatus().equals("ongoing")) {
-                                line2 = String.format("%s is yet to complete the challenge.\n We'll notify who wins",
+                                line2 = String.format("%s is yet to complete the challenge.\nKeep an eye out for more updates!",
                                         sndId.substring(0, sndId.indexOf('@')));
                             } else {
                                 if(challenge.getStatus().equals("snd")) {
