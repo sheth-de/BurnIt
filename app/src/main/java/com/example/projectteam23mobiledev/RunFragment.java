@@ -241,7 +241,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
 
         RunModel run = new RunModel(currEmail, distanceValue,
-                stepCount, speed, elapsedSeconds, challengeId ,caloriesValue);
+                stepCount, speed, sec, challengeId ,caloriesValue);
 
         // get run model of the other user
         final RunModel[] opp_run = new RunModel[1];
@@ -529,7 +529,7 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
             if (challenge != null) {
                 if ("distance".equals(challenge.getType())) {
-                    if (Double.valueOf(roundOffDistance).equals(challenge.getDistance())) {
+                    if (Integer.valueOf(roundOffDistance).equals(challenge.getDistance())) {
                         onStop();
                     }
                 }
@@ -537,12 +537,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
             //calculate steps
             steps.setText(String.valueOf(stepCount));
-
-            //calculate time
-            long tEnd = System.currentTimeMillis();
-            long tDelta = tEnd - tStart;
-            elapsedSeconds = (tDelta / 1000);
-            elapsedHours = (elapsedSeconds/(60.0 * 60.0));
 
             //calculate pace
             speed = (elapsedHours != 0) ? (distanceValue/elapsedHours) : 0;
@@ -698,6 +692,28 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
 
                 public void run()
                 {
+
+                    if (isRunning)
+                    {
+                        sec++;
+
+                        //calculate time
+                        long tEnd = System.currentTimeMillis();
+                        long tDelta = tEnd - tStart;
+                        elapsedSeconds = (tDelta / 1000);
+                        elapsedHours = (elapsedSeconds/(60.0 * 60.0));
+
+                        //stop run after challenge
+                        if (challenge != null) {
+                            if ("time".equals(challenge.getType())) {
+                                if (challenge.getTime() * 60 == sec) {
+
+                                    onStop();
+                                }
+                            }
+                        }
+                    }
+
                     int hours_var = sec / 3600;
                     int minutes_var = (sec % 3600) / 60;
                     int secs_var = sec % 60;
@@ -706,19 +722,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                             "%d:%02d:%02d", hours_var, minutes_var, secs_var);
 
                     time.setText(time_value);
-
-                    if (isRunning)
-                    {
-                        sec++;
-                        //stop run after challenge
-                        if (challenge != null) {
-                            if ("time".equals(challenge.getType())) {
-                                if (challenge.getTime() * 60 == sec) {
-                                    onStop();
-                                }
-                            }
-                        }
-                    }
 
                     hd.postDelayed(this, 1000);
                 }
