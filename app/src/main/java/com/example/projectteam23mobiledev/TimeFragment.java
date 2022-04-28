@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,7 +26,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,12 +39,14 @@ public class TimeFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     FirebaseAuth mAuth;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    long walletBalance = 0;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    Spinner spinner_time_minutes;
+    Spinner spinner_time_min_points;
+    Spinner spinner_time_add_users;
     Button btnCreateTimeChallenge;
-    EditText timeEnterTime;
-    EditText timeMinPoints;
-    EditText timeAddUsers;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -83,38 +89,111 @@ public class TimeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_time, container, false);
         // Inflate the layout for this fragment
-        timeEnterTime = v.findViewById(R.id.timeEnterTime);
-        timeMinPoints = v.findViewById(R.id.timeMinPoints);
-        timeAddUsers = v.findViewById(R.id.timeAddUsers);
+        spinner_time_minutes = v.findViewById(R.id.spinner_time_minutes);
+        List<String> time_items = new ArrayList<String>();
+        time_items.add("10");
+        time_items.add("15");
+        time_items.add("20");
+        time_items.add("30");
+        time_items.add("45");
+        time_items.add("60");
+        time_items.add("90");
+        time_items.add("120");
+        ArrayAdapter<String> timeAdapter1 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, time_items);
+        timeAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_time_minutes.setAdapter(timeAdapter1);
+        
+        spinner_time_min_points = v.findViewById(R.id.spinner_time_min_points);
+        List<String> min_points = new ArrayList<>();
+        min_points.add("20");
+        min_points.add("50");
+        min_points.add("100");
+        min_points.add("150");
+        min_points.add("200");
+        min_points.add("300");
+        min_points.add("400");
+        List<String> updated_list =  new ArrayList<>();
+        Query findWallect = db.collection("users").whereEqualTo("email",mAuth.getCurrentUser().getEmail().toString());
+        findWallect.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    walletBalance = (long) task.getResult().getDocuments().get(0).get("wallet");
+                    for(int i=0; i<min_points.size();i++){
+                        if(Integer.parseInt(min_points.get(i))<=walletBalance){
+                            updated_list.add(min_points.get(i));
+                        }
+                    }
+                    if(updated_list.size()==0){
+                        updated_list.add("0");
+                    }
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, updated_list);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner_time_min_points.setAdapter(adapter2);
+                }
+                else{
+                    updated_list.add("0");
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, updated_list);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner_time_min_points.setAdapter(adapter2);
+                }
+            }
+        });
+
+
+        spinner_time_add_users = v.findViewById(R.id.spinner_time_add_users);
+        List<String> listOfUsers = new ArrayList<>();
+        Query findUsers = db.collection("users").whereNotEqualTo("email",mAuth.getCurrentUser().getEmail());
+        findUsers.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        listOfUsers.add(document.getData().get("email").toString());
+                    }
+                    ArrayAdapter<String> adapter3 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, listOfUsers);
+                    adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner_time_add_users.setAdapter(adapter3);
+                }
+                else{
+                    Toast.makeText(getActivity(), "Cannot fetch data, some problem occured", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        });
+
         btnCreateTimeChallenge = v.findViewById(R.id.btnCreateTimeChallenge);
         btnCreateTimeChallenge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                Double  time =0.0;
+                Integer  time =0;
                 Integer minPoints =0;
                 Date d = new Date();
                 d.getTime();
                 try{
-                    time = Double.parseDouble(timeEnterTime.getText().toString());
+                    time = Integer.parseInt(spinner_time_minutes.getSelectedItem().toString());
                 }
                 catch (Exception e){
                     Toast.makeText(getActivity(), "Enter Valid Time in Minutes", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 try{
-                    minPoints = Integer.parseInt(timeMinPoints.getText().toString());
+                    minPoints = Integer.parseInt(spinner_time_min_points.getSelectedItem().toString());
                 }
                 catch (Exception e){
                     Toast.makeText(getActivity(), "Enter Valid Points", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String userAdded = timeAddUsers.getText().toString();
+
+                if(minPoints==0){
+                    Toast.makeText(getActivity(), "Not enough points to create a challenge!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String userAdded = spinner_time_add_users.getSelectedItem().toString();
                 Query query = db.collection("users").whereEqualTo("email", userAdded);
-                Double finalTime = time;
+                Integer finalTime = time;
                 Integer finalMinPoints = minPoints;
                 Integer finalMinPoints1 = minPoints;
-                final Boolean[] flag = {false};
                 String currEmail = mAuth.getCurrentUser().getEmail();
                 query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -123,7 +202,7 @@ public class TimeFragment extends Fragment {
                             for (DocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
                                     Challenge challenge = new Challenge("time",
-                                            0.0,
+                                            0,
                                             finalTime,
                                             userAdded,
                                             mAuth.getCurrentUser().getEmail().toString(),
@@ -147,7 +226,6 @@ public class TimeFragment extends Fragment {
                                                             Long wallBal = (Long) document.getData().get("wallet");
                                                             Challenge c = challenge;
                                                             int minPoint = c.getMinPoints();
-                                                            if (wallBal > minPoint) {
                                                                 // can play
                                                                 wallBal -= minPoint;
 
@@ -161,9 +239,8 @@ public class TimeFragment extends Fragment {
                                                                         db.collection("challenges")
                                                                                 .add(challenge)
                                                                                 .addOnSuccessListener(documentReference -> {
-                                                                                    flag[0] =true;
                                                                                     Toast.makeText(getActivity(), "Challenge created successfully", Toast.LENGTH_SHORT).show();
-                                                                                    Intent intent = new Intent(getContext(), MainActivity.class);
+                                                                                    Intent intent = new Intent(getActivity(),MainActivity.class);
                                                                                     startActivity(intent);
                                                                                 })
                                                                                 .addOnFailureListener(exception -> {
@@ -175,7 +252,7 @@ public class TimeFragment extends Fragment {
 
 
 
-                                                            }
+
                                                         }
                                                     }
                                                 }

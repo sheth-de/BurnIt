@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 public class Challenge implements Serializable {
     String type;
-    Double distance;
-    Double time;
+    int distance;
+    int time;
     String receiver;
     String sender;
     Integer minPoints;
@@ -33,7 +33,7 @@ public class Challenge implements Serializable {
         this.receiverStatus = receiverStatus;
     }
 
-    public Challenge(String type, Double distance, Double time, String receiver, String sender, Integer minPoints, Long timeStamp, Integer totalCredit, String status, StatusEnum sendStatus, StatusEnum receiverStatus) {
+    public Challenge(String type, int distance, int time, String receiver, String sender, Integer minPoints, Long timeStamp, Integer totalCredit, String status, StatusEnum sendStatus, StatusEnum receiverStatus) {
         this.type = type;
         this.distance = distance;
         this.time = time;
@@ -57,19 +57,19 @@ public class Challenge implements Serializable {
         this.type = type;
     }
 
-    public Double getDistance() {
+    public int getDistance() {
         return distance;
     }
 
-    public void setDistance(Double distance) {
+    public void setDistance(int distance) {
         this.distance = distance;
     }
 
-    public Double getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(Double time) {
+    public void setTime(int time) {
         this.time = time;
     }
 

@@ -23,51 +23,75 @@
         android:id="@+id/btnCreateTimeChallenge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="212dp"
         android:text="Create"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeAddUsers" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_time_min_points" />
 
-    <EditText
-        android:id="@+id/timeEnterTime"
-        android:layout_width="282dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="136dp"
-        android:ems="10"
-        android:hint="Enter time in minutes"
-        android:inputType="textPersonName"
+    <TextView
+        android:id="@+id/label_time_miles"
+        android:layout_width="254dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="76dp"
+        android:text="Enter time in minutes:"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.511"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView4"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/spinner_time_minutes"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
-    <EditText
-        android:id="@+id/timeMinPoints"
-        android:layout_width="283dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="72dp"
-        android:ems="10"
-        android:hint="Enter Minimum Points to join"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/timeEnterTime"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeEnterTime"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <EditText
-        android:id="@+id/timeAddUsers"
+    <Spinner
+        android:id="@+id/spinner_time_min_points"
         android:layout_width="280dp"
         android:layout_height="60dp"
-        android:layout_marginTop="72dp"
-        android:ems="10"
-        android:hint="Enter usernames to invite"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/timeMinPoints"
-        app:layout_constraintTop_toBottomOf="@+id/timeMinPoints"
+        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_time_points"
+        app:layout_constraintVertical_bias="0.018"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <TextView
+        android:id="@+id/label_time_points"
+        android:layout_width="254dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="212dp"
+        android:text="Enter points to join:"
+        app:layout_constraintStart_toStartOf="@+id/spinner_time_min_points"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+    <Spinner
+        android:id="@+id/spinner_time_minutes"
+        android:layout_width="280dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="66dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/label_time_miles"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Spinner
+        android:id="@+id/spinner_time_add_users"
+        android:layout_width="280dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="92dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_time_min_points"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/label_time_add_users"
+        android:layout_width="254dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="52dp"
+        android:text="Enter the user you want to invite:"
+        app:layout_constraintStart_toStartOf="@+id/spinner_time_add_users"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_time_min_points" />
 </androidx.constraintlayout.widget.ConstraintLayout>
