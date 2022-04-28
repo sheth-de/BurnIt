@@ -122,9 +122,9 @@ public class ChallengeFragment extends Fragment {
                             String challengeTitle = String.format("%s based", type);
                             String details = "";
                             if (type.equals("distance")) {
-                                details = String.format("%d miles - %s XP ", challenge.getDistance().intValue(), minPoints);
+                                details = String.format("%d miles - %s XP ", challenge.getDistance(), minPoints);
                             } else {
-                                details = String.format("%d min - %s XP ", challenge.getTime().intValue(), minPoints);
+                                details = String.format("%d min - %s XP ", challenge.getTime(), minPoints);
                             }
 
                             switch (dc.getType()) {

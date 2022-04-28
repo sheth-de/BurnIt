@@ -248,28 +248,6 @@ public class RunFragment extends Fragment implements SensorEventListener, OnMapR
                 .whereEqualTo("challengeId", challengeId);
 //                        .whereNotEqualTo("user", currEmail);
 
-//                q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-////                                        opp_run[0] = (RunModel) document.toObject(RunModel.class);
-//
-//                                Log.d(TAG," user: "+(String) document.getData().get("user"));
-//
-//                                String usr = (String) document.getData().get("user");
-//
-//                                if (!usr.equals(currEmail)) {
-//                                    // the other user exists
-//                                }
-//                            }
-//                            Log.d(TAG," Bingo");
-//                        } else {
-//                            Log.d(TAG, "the query doesn't work");
-//                        }
-//                    }
-//                });
-
 
         if(challengeId == "0") {
             // if no challenge and just a normal
