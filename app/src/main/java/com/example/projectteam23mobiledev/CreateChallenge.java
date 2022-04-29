@@ -7,10 +7,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.projectteam23mobiledev.Adapters.ViewPagerAdapter;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class CreateChallenge extends AppCompatActivity {
+    private BottomNavViewModel bottomNavViewModel;
+
+    public CreateChallenge() {
+
+        //this.bottomNavViewModel = getIntent().getParcelableExtra("Bottom_Navigation_View_Model");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,13 +27,13 @@ public class CreateChallenge extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager2 viewPager2 = findViewById(R.id.viewPgr2);
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this, bottomNavViewModel);
         viewPager2.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager2,
                 new TabLayoutMediator.TabConfigurationStrategy() {
                     @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position ) {
                         switch(position) {
                             case 0:
                                 tab.setText("Distance Based");

@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.projectteam23mobiledev.Models.Challenge;
 import com.example.projectteam23mobiledev.Utilities.Enums.StatusEnum;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -32,7 +33,6 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TimeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class TimeFragment extends Fragment {
@@ -47,12 +47,13 @@ public class TimeFragment extends Fragment {
     Spinner spinner_time_min_points;
     Spinner spinner_time_add_users;
     Button btnCreateTimeChallenge;
+    private BottomNavViewModel bottomNavViewModel;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    public TimeFragment() {
+    public TimeFragment(BottomNavViewModel bottomNavViewModel) {
         // Required empty public constructor
     }
 
@@ -60,19 +61,9 @@ public class TimeFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment TimeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TimeFragment newInstance(String param1, String param2) {
-        TimeFragment fragment = new TimeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -241,7 +232,9 @@ public class TimeFragment extends Fragment {
                                                                                 .addOnSuccessListener(documentReference -> {
                                                                                     Toast.makeText(getActivity(), "Challenge created successfully", Toast.LENGTH_SHORT).show();
                                                                                     Intent intent = new Intent(getActivity(),MainActivity.class);
+                                                                                    intent.putExtra("challengeScreen",true);
                                                                                     startActivity(intent);
+
                                                                                 })
                                                                                 .addOnFailureListener(exception -> {
                                                                                     Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_SHORT).show();
@@ -262,9 +255,6 @@ public class TimeFragment extends Fragment {
 
                                 }
                             }
-//                            if(flag[0]==false){
-//                                Toast.makeText(getActivity(), "Enter valid user email", Toast.LENGTH_SHORT).show();
-//                            }
                         }
                         else {
                             Toast.makeText(getActivity(), "Some error occurred!", Toast.LENGTH_SHORT).show();
