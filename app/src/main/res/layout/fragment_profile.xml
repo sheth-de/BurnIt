@@ -49,7 +49,7 @@
         android:layout_width="185dp"
         android:layout_height="32dp"
         android:layout_marginTop="24dp"
-        android:text="Total Challenges Completed:"
+        android:text="Total Challenges:"
         app:layout_constraintEnd_toStartOf="@+id/textProfileTotalChallenges"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/labelProfileAverageSpeed"
