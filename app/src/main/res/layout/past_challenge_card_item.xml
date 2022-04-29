@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,98 +20,91 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <LinearLayout
+
+                <TextView
+                    android:id="@+id/txt_ch_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+                    android:layout_margin="10dp"
+                    android:text="Challenge Title"
+                    android:textSize="25sp"
+                    app:layout_constraintEnd_toStartOf="@+id/txt_status"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/txt_ch_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="Challenge Title"
-                        android:textSize="25sp" />
-
-                    <TextView
-                        android:id="@+id/txt_ch_details"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="Challenge details"
-
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/txt_ch_createdby"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="Created By:"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/txt_result"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="PLayer 1 won"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout"
+                <TextView
+                    android:id="@+id/txt_ch_details"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_marginStart="20dp"
+
+                    android:layout_marginTop="16dp"
+                    android:text="Challenge details"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_ch_title" />
+
+                <TextView
+                    android:id="@+id/txt_ch_createdby"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Created By:"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_ch_details" />
+
+                <TextView
+                    android:id="@+id/txt_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="PLayer 1 won"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_ch_createdby" />
+
+                <TextView
+                    android:id="@+id/txt_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@color/browser_actions_bg_grey"
+                    android:padding="5dp"
+                    android:text="Completed"
+                    android:textColor="@android:color/holo_green_light"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
-                        android:text="Completed"
-                        android:id="@+id/txt_status"
-                        android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/txt_ch_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/shape_rect"
+                    android:drawableStart="@drawable/ic_time"
+                    android:drawableLeft="@drawable/ic_time"
+                    android:drawablePadding="5dp"
 
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="2 days ago"
+                    android:textColor="#000"
+                    android:textSize="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_status" />
 
-                    <TextView
-                        android:layout_margin="20dp"
-                        android:id="@+id/txt_ch_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/shape_rect"
-                        android:drawableStart="@drawable/ic_time"
-                        android:drawableLeft="@drawable/ic_time"
-                        android:drawablePadding="5dp"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-
-                        android:text="2 days ago"
-                        android:textColor="#000"
-                        android:textSize="10dp" />
-                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-
 
 
         </LinearLayout>

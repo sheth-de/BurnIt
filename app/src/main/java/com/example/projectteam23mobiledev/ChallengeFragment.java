@@ -254,13 +254,13 @@ public class ChallengeFragment extends Fragment {
 
                         pastChViewPager.setPadding(50, 0, 50, 0);
 
-                        onGoingChallengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, ongoingModelArrayList, false, bottomNavViewModel, true);
+                        onGoingChallengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, ongoingModelArrayList, false, bottomNavViewModel, false);
 
                         ongoingChViewPager.setAdapter(onGoingChallengeCardAdapter);
 
                         ongoingChViewPager.setPadding(50, 0, 50, 0);
 
-                        challengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, modelArrayList, true, bottomNavViewModel, true);
+                        challengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, modelArrayList, true, bottomNavViewModel, false);
 
                         openChViewPager.setAdapter(challengeCardAdapter);
 
@@ -280,6 +280,14 @@ public class ChallengeFragment extends Fragment {
                         } else {
                             txt_ongoing.setVisibility(View.GONE);
                             ongoingChViewPager.setVisibility(View.GONE);
+                        }
+
+                        if (pastModelArrayList.size() > 0) {
+                            txt_past.setVisibility(View.VISIBLE);
+                            pastChViewPager.setVisibility(View.VISIBLE);
+                        } else {
+                            txt_past.setVisibility(View.GONE);
+                            pastChViewPager.setVisibility(View.GONE);
                         }
                     }
                 });

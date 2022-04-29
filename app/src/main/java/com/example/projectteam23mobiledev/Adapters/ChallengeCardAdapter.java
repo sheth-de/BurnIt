@@ -1,8 +1,11 @@
 package com.example.projectteam23mobiledev.Adapters;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,11 +75,16 @@ public class ChallengeCardAdapter extends PagerAdapter {
         System.out.println(container);
         View view;
 
-        if( isOpen) {
-            view = LayoutInflater.from(container.getContext()).inflate(R.layout.open_challenge_card_item, container, false);
+        if(isPast) {
+            view = LayoutInflater.from(container.getContext()).inflate(R.layout.past_challenge_card_item, container, false);;
         } else {
-            view = LayoutInflater.from(container.getContext()).inflate(R.layout.ongoing_challenge_card_item, container, false);
+            if( isOpen) {
+                view = LayoutInflater.from(container.getContext()).inflate(R.layout.open_challenge_card_item, container, false);
+            } else {
+                view = LayoutInflater.from(container.getContext()).inflate(R.layout.ongoing_challenge_card_item, container, false);
+            }
         }
+
 
         //initialize the uid views
         TextView ch_title = view.findViewById(R.id.txt_ch_title);
@@ -136,6 +144,8 @@ public class ChallengeCardAdapter extends PagerAdapter {
                             //receiver
                             res = String.format("Since %s withdrew, YOU won %d points", snd, (ch.getMinPoints()*2));
                         }
+                    } else {
+                        res = "This challenge was declined";
                     }
 
                     txt_result.setText(res);
@@ -387,7 +397,14 @@ public class ChallengeCardAdapter extends PagerAdapter {
 
 
         //add view to container
-        container.addView(view, position);
+        try {
+            container.addView(view, 0);
+            Log.d(TAG, "positons: "+position);
+            Log.d(TAG, "count: "+getCount());
+        } catch (Exception e) {
+            container.removeView(view);
+        }
+
 
         return view;
     }

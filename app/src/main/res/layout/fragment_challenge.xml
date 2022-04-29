@@ -111,7 +111,7 @@
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/vp_past_ch"
                     android:layout_width="wrap_content"
-                    android:layout_height="200dp"
+                    android:layout_height="250dp"
                     android:clipToPadding="false"
                     android:foregroundGravity="center"
                     android:overScrollMode="never" />
