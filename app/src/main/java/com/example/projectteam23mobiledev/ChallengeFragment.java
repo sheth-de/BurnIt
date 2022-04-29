@@ -6,6 +6,7 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +69,7 @@ public class ChallengeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateChallenge.class);
+//                intent.putExtra("Bottom_Navigation_View_Model", (Parcelable) bottomNavViewModel);
                 startActivity(intent);
             }
         });

@@ -7,11 +7,14 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.projectteam23mobiledev.DistanceFragment;
 import com.example.projectteam23mobiledev.TimeFragment;
+import com.example.projectteam23mobiledev.ViewModels.BottomNavViewModel;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity)
+    private BottomNavViewModel bottomNavViewModel;
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, BottomNavViewModel bottomNavViewModel)
     {
         super(fragmentActivity);
+        this.bottomNavViewModel=bottomNavViewModel;
     }
 
     @NonNull
@@ -20,11 +23,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
         switch (position) {
             case 0:
-                return  new DistanceFragment();
+                return  new DistanceFragment(bottomNavViewModel);
             case 1:
-                return new TimeFragment();
+                return new TimeFragment(bottomNavViewModel);
             default:
-                return  new DistanceFragment();
+                return  new DistanceFragment(bottomNavViewModel);
         }
     }
     @Override

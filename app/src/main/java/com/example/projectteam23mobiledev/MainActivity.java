@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
 //            usr.setText("Hi "+em.substring(0, em.indexOf('@'))+ "!");
         }
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, StartRunFragment).commit();
+
+
 
 //        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.profile);
 //        badgeDrawable.setVisible(true);
@@ -98,6 +99,15 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        Bundle extras = getIntent().getExtras();
+        if(extras == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, StartRunFragment).commit();
+        } else {
+            boolean getChallengeScreen= extras.getBoolean("challengeScreen");
+            if(getChallengeScreen){
+                bottomNavigationView.setSelectedItemId(R.id.challenge);
+            }
+        }
     }
 
     @Override
