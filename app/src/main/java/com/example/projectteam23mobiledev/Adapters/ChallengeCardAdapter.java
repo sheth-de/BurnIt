@@ -41,14 +41,17 @@ public class ChallengeCardAdapter extends PagerAdapter {
     //private Context context;
     private ArrayList<ChallengeCardModel> modelArrayList;
     private boolean isOpen;
+    private boolean isPast;
     private BottomNavViewModel bottomNavViewModel;
     private ChallengeCardModel model;
 
-    public ChallengeCardAdapter(ChallengeFragment context, ArrayList<ChallengeCardModel> modelArrayList, boolean isOpen, BottomNavViewModel bottomNavViewModel) {
+    public ChallengeCardAdapter(ChallengeFragment context, ArrayList<ChallengeCardModel> modelArrayList,
+                                boolean isOpen, BottomNavViewModel bottomNavViewModel, boolean pastChl) {
         this.context = context;
         this.isOpen = isOpen;
         this.modelArrayList = modelArrayList;
         this.bottomNavViewModel = bottomNavViewModel;
+        this.isPast = pastChl;
     }
 
     @Override
@@ -98,40 +101,175 @@ public class ChallengeCardAdapter extends PagerAdapter {
         int days = Days.daysBetween(new DateTime(new Date(time)), new DateTime(new Date())).getDays();
         ch_time.setText(String.format("%d day(s) ago", days));
 
+        if(isPast) {
 
-        if (isOpen) {
-            Button btn_accpt = view.findViewById(R.id.btn_accpt);
-            Button btn_decline = view.findViewById(R.id.btn_decline);
-            // handle accept click
-            btn_accpt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    // check if curr user has balance to accept
-                    // show toast
-
-                    String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    db.collection("users")
-                            .whereEqualTo("email", currEmail)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            Long wallBal = (Long) document.getData().get("wallet");
-                                            Challenge c = challengeCardModel.getChallenge();
-                                            int minPoint = c.getMinPoints();
-                                            if (wallBal > minPoint) {
-                                                // can play
+            String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+            TextView txt_status = view.findViewById(R.id.txt_status);
+            TextView txt_result = view.findViewById(R.id.txt_result);
+            String status = challengeCardModel.getChallenge().getStatus();
+            Challenge ch = challengeCardModel.getChallenge();
+            boolean isSnd =ch.getSender().equals(currEmail);
+            String snd = ch.getSender().substring(0, ch.getSender().indexOf('@'));
+            String rcv = ch.getReceiver().substring(0, ch.getReceiver().indexOf('@'));
 
 
-                                                wallBal -= minPoint;
+                    switch (status) {
+                case "closed":
+                    txt_status.setText("Closed");
+                    String res = "";
+                    if (ch.getReceiverStatus().equals(StatusEnum.WITHDRAWN)) {
 
-                                                c.setStatus("ongoing");
-                                                c.setReceiverStatus(StatusEnum.ACCEPTED);
-                                                c.setTotalCredit(c.getTotalCredit() + minPoint);
+                        if (isSnd) {
+                            //sender
+                             res = String.format("Since %s withdrew, YOU won %d points", rcv, (ch.getMinPoints()*2));
+
+                        } else {
+                            //receiver
+                            res = String.format("Since YOU withdrew, %s won %d points", snd, (ch.getMinPoints()*2));
+                        }
+                    } else if (ch.getSendStatus().equals(StatusEnum.WITHDRAWN)) {
+                        if (isSnd) {
+                            //sender
+                            res = String.format("Since YOU withdrew, %s won %d points", rcv, (ch.getMinPoints()*2));
+
+                        } else {
+                            //receiver
+                            res = String.format("Since %s withdrew, YOU won %d points", snd, (ch.getMinPoints()*2));
+                        }
+                    }
+
+                    txt_result.setText(res);
+
+
+                    break;
+                case "snd":
+                    txt_status.setText("COMPLETED");
+                    String res1 = "";
+                    if(isSnd) {
+                        res1 = String.format("You won by getting %d points", (ch.getMinPoints()*2));
+                    } else {
+                        res1 = String.format("%s won by getting %d points", snd,(ch.getMinPoints()*2));
+                    }
+                    txt_result.setText(res1);
+                    break;
+                case "rcv":
+                    txt_status.setText("COMPLETED");
+                    String res2 = "";
+                    if(isSnd) {
+                        res2 = String.format("%s won by getting %d points", snd,(ch.getMinPoints()*2));
+                    } else {
+                        res2 = String.format("You won by getting %d points", (ch.getMinPoints()*2));
+                    }
+                    txt_result.setText(res2);
+                    break;
+                default:
+                    break;
+            }
+
+
+
+        } else {
+
+            if (isOpen) {
+                Button btn_accpt = view.findViewById(R.id.btn_accpt);
+                Button btn_decline = view.findViewById(R.id.btn_decline);
+                // handle accept click
+                btn_accpt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        // check if curr user has balance to accept
+                        // show toast
+
+                        String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("users")
+                                .whereEqualTo("email", currEmail)
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Long wallBal = (Long) document.getData().get("wallet");
+                                                Challenge c = challengeCardModel.getChallenge();
+                                                int minPoint = c.getMinPoints();
+                                                if (wallBal > minPoint) {
+                                                    // can play
+
+
+                                                    wallBal -= minPoint;
+
+                                                    c.setStatus("ongoing");
+                                                    c.setReceiverStatus(StatusEnum.ACCEPTED);
+                                                    c.setTotalCredit(c.getTotalCredit() + minPoint);
+
+                                                    // deduct points from wallet
+                                                    db.collection("users").document(document.getId())
+                                                            .update(
+                                                                    "wallet", wallBal
+                                                            ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            ObjectMapper oMapper = new ObjectMapper();
+                                                            // object -> Map
+                                                            Map<String, Object> map = oMapper
+                                                                    .convertValue(challengeCardModel.getChallenge(), Map.class);
+                                                            //Log.e("doc id",challengeCardModel.getChallengeId() );
+                                                            db.collection("challenges")
+                                                                    .document(challengeCardModel.getChallengeId())
+                                                                    .update(map);
+                                                        }
+                                                    });
+
+
+                                                } else {
+
+                                                    AlertDialog alertDialog = new AlertDialog.Builder(context.getActivity()).create();
+                                                    alertDialog.setTitle("Warning");
+                                                    alertDialog.setMessage("Sorry, Insufficient Balance. Gain more points with those runs and challenges.");
+                                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                            new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
+                                                    alertDialog.show();
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+
+
+                    }
+                });
+
+
+                //handle decline click
+                btn_decline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        Challenge c = challengeCardModel.getChallenge();
+
+                        String oppEmail = c.getSender();
+                        db.collection("users")
+                                .whereEqualTo("email", oppEmail)
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Long wallBal = (Long) document.getData().get("wallet");
+                                                Challenge c = challengeCardModel.getChallenge();
+                                                int minPoint = c.getMinPoints();
+
+                                                wallBal += minPoint;
+                                                c.setTotalCredit(0);
 
                                                 // deduct points from wallet
                                                 db.collection("users").document(document.getId())
@@ -140,178 +278,110 @@ public class ChallengeCardAdapter extends PagerAdapter {
                                                         ).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
+
+                                                        c.setStatus("closed");
+                                                        c.setReceiverStatus(StatusEnum.DECLINED);
+
                                                         ObjectMapper oMapper = new ObjectMapper();
                                                         // object -> Map
-                                                        Map<String, Object> map = oMapper
-                                                                .convertValue(challengeCardModel.getChallenge(), Map.class);
+                                                        Map<String, Object> map = oMapper.convertValue(c, Map.class);
                                                         //Log.e("doc id",challengeCardModel.getChallengeId() );
                                                         db.collection("challenges")
                                                                 .document(challengeCardModel.getChallengeId())
                                                                 .update(map);
+
                                                     }
                                                 });
 
-
-
-                                            } else {
-
-                                                AlertDialog alertDialog = new AlertDialog.Builder(context.getActivity()).create();
-                                                alertDialog.setTitle("Warning");
-                                                alertDialog.setMessage("Sorry, Insufficient Balance. Gain more points with those runs and challenges.");
-                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                dialog.dismiss();
-                                                            }
-                                                        });
-                                                alertDialog.show();
                                             }
                                         }
                                     }
-                                }
-                            });
+                                });
 
 
-
-                }
-            });
-
-
-            //handle decline click
-            btn_decline.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                    Challenge c = challengeCardModel.getChallenge();
-
-                    String oppEmail = c.getSender();
-                    db.collection("users")
-                            .whereEqualTo("email", oppEmail)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            Long wallBal = (Long) document.getData().get("wallet");
-                                            Challenge c = challengeCardModel.getChallenge();
-                                            int minPoint = c.getMinPoints();
-
-                                            wallBal += minPoint;
-                                            c.setTotalCredit(0);
-
-                                            // deduct points from wallet
-                                            db.collection("users").document(document.getId())
-                                                    .update(
-                                                            "wallet", wallBal
-                                                    ).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-
-                                                    c.setStatus("closed");
-                                                    c.setReceiverStatus(StatusEnum.DECLINED);
-
-                                                    ObjectMapper oMapper = new ObjectMapper();
-                                                    // object -> Map
-                                                    Map<String, Object> map = oMapper.convertValue(c, Map.class);
-                                                    //Log.e("doc id",challengeCardModel.getChallengeId() );
-                                                    db.collection("challenges")
-                                                            .document(challengeCardModel.getChallengeId())
-                                                            .update(map);
-
-                                                }
-                                            });
-
-                                        }
-                                    }
-                                }
-                            });
-
-
-                }
-            });
-        } else {
-
-            Button btn_strt = view.findViewById(R.id.btn_strt);
-            Button btn_withdraw = view.findViewById(R.id.btn_withdraw);
-
-            // handle start click
-            btn_strt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                    String rcv_email = challengeCardModel.getChallenge().getReceiver();
-                    String snd_email = challengeCardModel.getChallenge().getSender();
-
-                    if (snd_email.equals(currEmail)) {
-                        challengeCardModel.getChallenge().setSendStatus(StatusEnum.STARTED);
-                    } else {
-                        challengeCardModel.getChallenge().setReceiverStatus(StatusEnum.STARTED);
                     }
+                });
+            } else {
 
-                    ObjectMapper oMapper = new ObjectMapper();
-                    // object -> Map
-                    Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
-                    db.collection("challenges")
-                            .document(challengeCardModel.getChallengeId())
-                            .update(map);
+                Button btn_strt = view.findViewById(R.id.btn_strt);
+                Button btn_withdraw = view.findViewById(R.id.btn_withdraw);
 
-                    RunFragment fragment = new RunFragment(bottomNavViewModel);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("challengeId", challengeCardModel.getChallengeId());
-                    bundle.putSerializable("challenge", challengeCardModel.getChallenge());
-                    fragment.setArguments(bundle);
-                    FragmentManager fm = context.getParentFragmentManager();
-                    bottomNavViewModel.select(1);
-                    fm.beginTransaction().replace(R.id.container, fragment).commit();
-                }
-            });
+                // handle start click
+                btn_strt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        String currEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        String rcv_email = challengeCardModel.getChallenge().getReceiver();
+                        String snd_email = challengeCardModel.getChallenge().getSender();
+
+                        if (snd_email.equals(currEmail)) {
+                            challengeCardModel.getChallenge().setSendStatus(StatusEnum.STARTED);
+                        } else {
+                            challengeCardModel.getChallenge().setReceiverStatus(StatusEnum.STARTED);
+                        }
+
+                        ObjectMapper oMapper = new ObjectMapper();
+                        // object -> Map
+                        Map<String, Object> map = oMapper.convertValue(challengeCardModel.getChallenge(), Map.class);
+                        db.collection("challenges")
+                                .document(challengeCardModel.getChallengeId())
+                                .update(map);
+
+                        RunFragment fragment = new RunFragment(bottomNavViewModel);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("challengeId", challengeCardModel.getChallengeId());
+                        bundle.putSerializable("challenge", challengeCardModel.getChallenge());
+                        fragment.setArguments(bundle);
+                        FragmentManager fm = context.getParentFragmentManager();
+                        bottomNavViewModel.select(1);
+                        fm.beginTransaction().replace(R.id.container, fragment).commit();
+                    }
+                });
 
 
-            //handle withdraw click
-            btn_withdraw.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Challenge c = challengeCardModel.getChallenge();
+                //handle withdraw click
+                btn_withdraw.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Challenge c = challengeCardModel.getChallenge();
 
-                    String title = "Warning";
-                    String text = String.format("If you withdraw now, you will lose your " +
-                            "waged points of %d xp in this %s based challenge.", c.getMinPoints(), c.getType());
+                        String title = "Warning";
+                        String text = String.format("If you withdraw now, you will lose your " +
+                                "waged points of %d xp in this %s based challenge.", c.getMinPoints(), c.getType());
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context.getActivity());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context.getActivity());
 
-                    LayoutInflater inflater = context.getActivity().getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.withdrawal_dialog_box, null);
+                        LayoutInflater inflater = context.getActivity().getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.withdrawal_dialog_box, null);
 
-                    builder.setView(dialogView)
-                            .setTitle(title)
-                            .setNegativeButton("withdraw", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                        builder.setView(dialogView)
+                                .setTitle(title)
+                                .setNegativeButton("withdraw", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                    withdrawFromChallenge();
+                                        withdrawFromChallenge();
 
-                                }
-                            })
-                            .setPositiveButton("cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .setPositiveButton("cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                }
-                            });
+                                    }
+                                });
 
-                    TextView txt_msg = dialogView.findViewById(R.id.txt_msg);
-                    txt_msg.setText(text);
+                        TextView txt_msg = dialogView.findViewById(R.id.txt_msg);
+                        txt_msg.setText(text);
 
-                    builder.show();
+                        builder.show();
 
-                }
-            });
+                    }
+                });
+            }
         }
 
 
@@ -362,6 +432,11 @@ public class ChallengeCardAdapter extends PagerAdapter {
                                     public void onSuccess(Void unused) {
 
                                         c.setStatus("closed");
+                                        if(c.getSender().equals(currEmail)) {
+                                            c.setSendStatus(StatusEnum.WITHDRAWN);
+                                        } else {
+                                            c.setReceiverStatus(StatusEnum.WITHDRAWN);
+                                        }
                                         ObjectMapper oMapper = new ObjectMapper();
                                         // object -> Map
                                         Map<String, Object> map = oMapper.convertValue(c, Map.class);

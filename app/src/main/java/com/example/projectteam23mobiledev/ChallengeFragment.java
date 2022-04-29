@@ -31,8 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,12 +40,15 @@ public class ChallengeFragment extends Fragment {
 
     private ViewPager openChViewPager;
     private ViewPager ongoingChViewPager;
+    private ViewPager pastChViewPager;
     private ArrayList<ChallengeCardModel> modelArrayList;
     private ArrayList<ChallengeCardModel> ongoingModelArrayList;
+    private ArrayList<ChallengeCardModel> pastModelArrayList;
     private ChallengeCardAdapter challengeCardAdapter;
     private ChallengeCardAdapter onGoingChallengeCardAdapter;
+    private ChallengeCardAdapter pastChallengeCardAdapter;
     private Button fragmentBtnCreateChallenge;
-    private TextView txt_open, txt_ongoing;
+    private TextView txt_open, txt_ongoing, txt_past;
 
     FirebaseAuth mAuth;
     private BottomNavViewModel bottomNavViewModel;
@@ -87,6 +88,12 @@ public class ChallengeFragment extends Fragment {
         ongoingChViewPager.setVisibility(View.GONE);
         txt_ongoing.setVisibility(View.GONE);
         ongoingModelArrayList = new ArrayList<>();
+
+        pastChViewPager = view.findViewById(R.id.vp_past_ch);
+        txt_past = view.findViewById(R.id.txt_past_chl);
+        pastChViewPager.setVisibility(View.GONE);
+        txt_past.setVisibility(View.GONE);
+        pastModelArrayList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("challenges")
@@ -159,6 +166,17 @@ public class ChallengeFragment extends Fragment {
                                                         challenge));
                                             }
                                             break;
+                                        case "snd":
+                                        case "rcv":
+                                        case "closed":
+                                            pastModelArrayList.add(new ChallengeCardModel(challengeTitle,
+                                                    details,
+                                                    ch_date,
+                                                    sndId.substring(0, sndId.indexOf('@')),
+                                                    document.getId(),
+                                                    challenge));
+                                            break;
+
                                         default: break;
 
 
@@ -169,7 +187,15 @@ public class ChallengeFragment extends Fragment {
 
 //                                    String status = (String) dc.getDocument().getData().get("status");
                                     switch (ch_status){
+                                        case "snd":
+                                        case "rcv":
                                         case "closed":
+                                            pastModelArrayList.add(new ChallengeCardModel(challengeTitle,
+                                                    details,
+                                                    ch_date,
+                                                    sndId.substring(0, sndId.indexOf('@')),
+                                                    document.getId(),
+                                                    challenge));
                                             modelArrayList.removeIf(c -> c.getChallengeId()
                                                     .equals(dc.getDocument().getId()));
                                             ongoingModelArrayList.removeIf(c -> c.getChallengeId()
@@ -190,6 +216,7 @@ public class ChallengeFragment extends Fragment {
                                                         challenge));
                                             }
                                             break;
+
                                         default:
                                             break;
                                     }
@@ -213,13 +240,25 @@ public class ChallengeFragment extends Fragment {
                             }
                         });
 
-                        onGoingChallengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, ongoingModelArrayList, false, bottomNavViewModel);
+                        Collections.sort(pastModelArrayList, new Comparator<ChallengeCardModel>() {
+                            public int compare(ChallengeCardModel o1, ChallengeCardModel o2) {
+                                return new Date(o1.getDate()).compareTo(new Date(o2.getDate())) * -1;
+                            }
+                        });
+
+                        pastChallengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, pastModelArrayList, false, bottomNavViewModel, true);
+
+                        pastChViewPager.setAdapter(pastChallengeCardAdapter);
+
+                        pastChViewPager.setPadding(50, 0, 50, 0);
+
+                        onGoingChallengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, ongoingModelArrayList, false, bottomNavViewModel, true);
 
                         ongoingChViewPager.setAdapter(onGoingChallengeCardAdapter);
 
                         ongoingChViewPager.setPadding(50, 0, 50, 0);
 
-                        challengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, modelArrayList, true, bottomNavViewModel);
+                        challengeCardAdapter = new ChallengeCardAdapter(ChallengeFragment.this, modelArrayList, true, bottomNavViewModel, true);
 
                         openChViewPager.setAdapter(challengeCardAdapter);
 
@@ -269,7 +308,7 @@ public class ChallengeFragment extends Fragment {
     private void loadOngoingCards() {
         ongoingModelArrayList = new ArrayList<>();
 
-        onGoingChallengeCardAdapter = new ChallengeCardAdapter(this, ongoingModelArrayList, false, bottomNavViewModel);
+        onGoingChallengeCardAdapter = new ChallengeCardAdapter(this, ongoingModelArrayList, false, bottomNavViewModel, true);
 
         ongoingChViewPager.setAdapter(onGoingChallengeCardAdapter);
 
@@ -279,7 +318,7 @@ public class ChallengeFragment extends Fragment {
     private void loadOpenCards() {
         modelArrayList = new ArrayList<>();
 
-        challengeCardAdapter = new ChallengeCardAdapter(this, modelArrayList, true, bottomNavViewModel);
+        challengeCardAdapter = new ChallengeCardAdapter(this, modelArrayList, true, bottomNavViewModel, true);
 
         openChViewPager.setAdapter(challengeCardAdapter);
 

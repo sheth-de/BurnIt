@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/btn_round.xml" value="0.1925" />
         <entry key="app/src/main/res/drawable/challenge_24.xml" value="0.2645" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2085" />
+        <entry key="app/src/main/res/drawable/profile_24.xml" value="0.2595" />
         <entry key="app/src/main/res/drawable/run_24.xml" value="0.2645" />
         <entry key="app/src/main/res/drawable/shape_rect.xml" value="0.303" />
         <entry key="app/src/main/res/layout/activity_create_challenge.xml" value="0.19610507246376813" />
@@ -15,19 +16,24 @@
         <entry key="app/src/main/res/layout/activity_home_screen.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19610507246376813" />
-        <entry key="app/src/main/res/layout/activity_run_stats.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/activity_run.xml" value="0.31837606837606836" />
+        <entry key="app/src/main/res/layout/activity_run_stats.xml" value="0.31837606837606836" />
         <entry key="app/src/main/res/layout/bottom_navigation_menu.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/layout/card_item.xml" value="0.18229166666666666" />
-        <entry key="app/src/main/res/layout/fragment_challenge.xml" value="0.175" />
+        <entry key="app/src/main/res/layout/fragment_challenge.xml" value="0.20478837109876016" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/layout/fragment_distance.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.25052083333333336" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_run.xml" value="0.424962852897474" />
+        <entry key="app/src/main/res/layout/fragment_run.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_run_stats.xml" value="0.3185121846943138" />
+        <entry key="app/src/main/res/layout/fragment_start_run.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_time.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/ongoing_challenge_card_item.xml" value="0.16033755274261605" />
         <entry key="app/src/main/res/layout/open_challenge_card_item.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/past_challenge_card_item.xml" value="0.37067122702009403" />
+        <entry key="app/src/main/res/layout/withdrawal_dialog_box.xml" value="0.20478837109876016" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.4661458333333333" />
       </map>
     </option>
@@ -37,5 +43,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.37067122702009403" />
+      </ProjectState>
+    </option>
   </component>
 </project>
